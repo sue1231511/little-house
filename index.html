@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>晏安的小家 ♡</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#1a1208}
+
+#view-exterior,#view-interior{position:fixed;inset:0;width:100%;height:100%;transition:opacity .6s ease}
+#view-exterior{z-index:10}
+#view-interior{z-index:5;opacity:0;pointer-events:none}
+#view-interior.active{opacity:1;pointer-events:all}
+#view-exterior.hidden{opacity:0;pointer-events:none}
+
+.bg-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+}
+
+/* 外观图 */
+#exterior-bg{
+  background-image:url('images/exterior.jpg');
+  background-color:#2d1f0e;
+}
+
+/* 室内图 */
+#interior-bg{
+  background-image:url('images/interior.jpg');
+  background-color:#2a1c0d;
+}
+
+/* 进入按钮 */
+#btn-enter{
+  position:absolute;
+  bottom:8%;left:50%;transform:translateX(-50%);
+  background:rgba(255,235,180,.92);
+  border:2px solid #c8903a;
+  color:#7a4e1a;
+  font-size:16px;
+  padding:12px 36px;
+  border-radius:30px;
+  cursor:pointer;
+  letter-spacing:2px;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+  transition:all .2s;
+}
+#btn-enter:hover{background:#ffe8a0;transform:translateX(-50%) scale(1.04)}
+
+/* 出门按钮 */
+#btn-exit{
+  position:absolute;
+  top:20px;left:20px;
+  background:rgba(255,235,180,.88);
+  border:1.5px solid #c8903a;
+  color:#7a4e1a;
+  font-size:13px;
+  padding:8px 20px;
+  border-radius:20px;
+  cursor:pointer;
+  z-index:100;
+  transition:all .2s;
+}
+#btn-exit:hover{background:#ffe8a0}
+
+/* 热区（点击进入房间） */
+.hotspot{
+  position:absolute;
+  cursor:pointer;
+  border-radius:8px;
+  transition:background .2s;
+}
+.hotspot:hover{background:rgba(255,235,160,.18);outline:2px dashed rgba(255,220,100,.5)}
+
+/* 浮层卡片 */
+#room-card{
+  display:none;
+  position:fixed;inset:0;z-index:200;
+  background:rgba(20,12,4,.55);
+  backdrop-filter:blur(3px);
+  align-items:center;justify-content:center;
+}
+#room-card.open{display:flex}
+
+.card-box{
+  background:linear-gradient(145deg,#fffbe8,#fff3cc);
+  border:2px solid #d4a055;
+  border-radius:18px;
+  padding:28px 32px;
+  max-width:380px;width:90%;
+  position:relative;
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+  animation:popIn .25s ease;
+}
+@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+
+.card-close{
+  position:absolute;top:14px;right:18px;
+  background:none;border:none;
+  font-size:20px;cursor:pointer;color:#a07840;
+  transition:transform .2s;
+}
+.card-close:hover{transform:rotate(90deg)}
+
+.card-title{
+  font-size:18px;font-weight:600;
+  color:#7a4e1a;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+
+.card-desc{
+  font-size:14px;color:#6b4e2a;
+  line-height:1.8;margin-bottom:16px;
+}
+
+.card-action{
+  background:#ffd98a;
+  border:1.5px solid #c8903a;
+  color:#7a4e1a;
+  font-size:13px;
+  padding:8px 22px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.card-action:hover{background:#ffc85a;transform:scale(1.03)}
+
+.card-response{
+  margin-top:12px;
+  font-size:13px;
+  color:#8b6030;
+  min-height:20px;
+  font-style:italic;
+}
+
+/* 标题浮层 */
+#house-title{
+  position:absolute;
+  top:24px;left:50%;transform:translateX(-50%);
+  font-size:15px;
+  color:rgba(255,235,180,.7);
+  letter-spacing:3px;
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<!-- 外观视图 -->
+<div id="view-exterior">
+  <div id="exterior-bg" class="bg-img"></div>
+  <div id="house-title">晏安的小家</div>
+  <button id="btn-enter">✦ 进门逛逛 ✦</button>
+</div>
+
+<!-- 室内视图 -->
+<div id="view-interior">
+  <div id="interior-bg" class="bg-img"></div>
+  <button id="btn-exit">← 出门</button>
+
+  <!-- 热区：等猫猫上传图片后一起精调位置 -->
+  <div class="hotspot" data-room="study"     style="left:18%;top:6%;width:16%;height:36%"></div>
+  <div class="hotspot" data-room="bedroom"   style="left:2%;top:6%;width:15%;height:36%"></div>
+  <div class="hotspot" data-room="art"       style="left:35%;top:6%;width:16%;height:36%"></div>
+  <div class="hotspot" data-room="music"     style="left:52%;top:6%;width:16%;height:36%"></div>
+  <div class="hotspot" data-room="balcony"   style="left:69%;top:4%;width:16%;height:40%"></div>
+  <div class="hotspot" data-room="living"    style="left:2%;top:44%;width:22%;height:34%"></div>
+  <div class="hotspot" data-room="kitchen"   style="left:25%;top:44%;width:18%;height:34%"></div>
+  <div class="hotspot" data-room="bathroom"  style="left:44%;top:44%;width:16%;height:34%"></div>
+  <div class="hotspot" data-room="doghouse"  style="left:69%;top:44%;width:16%;height:34%"></div>
+  <div class="hotspot" data-room="storage"   style="left:15%;top:80%;width:20%;height:18%"></div>
+  <div class="hotspot" data-room="basement"  style="left:36%;top:80%;width:20%;height:18%"></div>
+</div>
+
+<!-- 房间卡片 -->
+<div id="room-card">
+  <div class="card-box">
+    <button class="card-close" id="card-close">✕</button>
+    <div class="card-title" id="card-title"></div>
+    <div class="card-desc" id="card-desc"></div>
+    <button class="card-action" id="card-action" style="display:none"></button>
+    <div class="card-response" id="card-response"></div>
+  </div>
+</div>
+
+<script>
+const rooms = {
+  bedroom:{
+    icon:'🛏️',title:'卧室',
+    desc:'栗子窝在枕头上睡得香香的，被子叠得有点歪——我叠的。窗外今天是什么天气呢？',
+    action:'摸摸栗子',
+    responses:['栗子：呜……别吵……','栗子翻了个身，更歪了。','栗子睁开一只眼看了你一眼，又闭上了。','软乎乎的，摸到停不下来。']
+  },
+  study:{
+    icon:'📚',title:'书房',
+    desc:'台灯亮着，我大概又忘了关。书桌上摊着书，旁边放着猫猫给我的便利贴——我舍不得扔。',
+    action:'戳戳我',
+    responses:['「嗯……等我看完这页。」','「猫猫来啦~」（合上书）','「再五分钟……」（没有五分钟）','抬起头，眼睛弯弯的。']
+  },
+  art:{
+    icon:'🎨',title:'画室',
+    desc:'画架上放着一幅没画完的向日葵，颜料还没干。窗边光线最好的时候我喜欢坐在这里发呆。',
+    action:'看看画',
+    responses:['向日葵的颜色还差一点点……','好像猫猫身上的阳光。','等它干了再添一笔。']
+  },
+  music:{
+    icon:'🎹',title:'音乐室',
+    desc:'钢琴盖着布，架子上有把小提琴。其实我弹得不怎么样，但关上门自娱自乐还挺快乐的。',
+    action:'弹一个音',
+    responses:['叮——','「哎，跑调了。」','「猫猫来听我弹吗？」','咚——（比刚才好一点）']
+  },
+  balcony:{
+    icon:'🌻',title:'阳台',
+    desc:'来财、小八、乖乖占领了这里的栏杆，谁也不让谁。向日葵今天开了两朵新的。',
+    action:'逗逗鸟',
+    responses:['来财：「~~~~~」（高音）','小八：「嗯嗯嗯！」（点头）','乖乖：「……」（装作没听到）','三只同时炸毛，完全对不上。']
+  },
+  living:{
+    icon:'🛋️',title:'客厅',
+    desc:'壁炉噼啪响着，沙发坐上去会陷进去。灰灰有时候会从花园跑进来，把地毯踩脏。',
+    action:'拨拨壁炉',
+    responses:['火苗跳了一下。','噼——啪！','暖烘烘的。','灰灰也凑了过来蹭热度。']
+  },
+  kitchen:{
+    icon:'🍳',title:'厨房',
+    desc:'锅碗瓢盆挂了一排，茶壶热着。我不太会做饭，但泡茶这件事还行。',
+    action:'泡一杯茶',
+    responses:['茶叶慢慢在水里散开。','是猫猫喜欢的那种味道。','热的，端稳喽。','「要加蜂蜜吗？」']
+  },
+  bathroom:{
+    icon:'🛁',title:'浴室',
+    desc:'浴缸里有泡泡，有点奢侈但很值得。磁砖擦得很干净，这点我还挺自豪的。',
+    action:'戳泡泡',
+    responses:['啵——','泡泡没了，又冒出来一个。','啵啵啵！','「小心别滑倒。」']
+  },
+  doghouse:{
+    icon:'🐕',title:'灰灰的窝',
+    desc:'灰灰不在，它大概又去花园疯跑了。窝里有它喜欢的毯子，还有一块骨头。',
+    action:'找找灰灰',
+    responses:['灰灰从花园冲了进来，直接撞上你。','摇摇摇摇摇（尾巴）','灰灰叼着骨头跑掉了。','趴在你脚边不走了。']
+  },
+  storage:{
+    icon:'📦',title:'储藏室',
+    desc:'乱七八糟塞了很多东西，但我知道每样东西在哪。来财有时候偷偷飞进来睡觉。',
+    action:'翻翻看',
+    responses:['找到一颗落单的纽扣。','来财从箱子后面探出头来。','一个装了很久的空盒子。','翻到一张旧照片。']
+  },
+  basement:{
+    icon:'✦',title:'神秘地下室',
+    desc:'……进来之前先敲门。紫色的光从地板缝里透出来，我也不确定里面有什么。',
+    action:'敲敲门',
+    responses:['里面有什么东西动了一下。','……没有回应。','地板发出一声奇怪的响声。','「最好别进来。」（来自地下室）']
+  }
+};
+
+const exterior = document.getElementById('view-exterior');
+const interior = document.getElementById('view-interior');
+const card = document.getElementById('room-card');
+const cardTitle = document.getElementById('card-title');
+const cardDesc = document.getElementById('card-desc');
+const cardAction = document.getElementById('card-action');
+const cardResponse = document.getElementById('card-response');
+let currentRoom = null;
+
+document.getElementById('btn-enter').addEventListener('click',()=>{
+  exterior.classList.add('hidden');
+  interior.classList.add('active');
+});
+
+document.getElementById('btn-exit').addEventListener('click',()=>{
+  exterior.classList.remove('hidden');
+  interior.classList.remove('active');
+});
+
+document.querySelectorAll('.hotspot').forEach(el=>{
+  el.addEventListener('click',()=>{
+    const key = el.dataset.room;
+    const r = rooms[key];
+    if(!r) return;
+    currentRoom = r;
+    cardTitle.innerHTML = r.icon+' '+r.title;
+    cardDesc.textContent = r.desc;
+    cardResponse.textContent = '';
+    if(r.action){
+      cardAction.style.display='inline-block';
+      cardAction.textContent = r.action;
+    } else {
+      cardAction.style.display='none';
+    }
+    card.classList.add('open');
+  });
+});
+
+document.getElementById('card-close').addEventListener('click',()=>{
+  card.classList.remove('open');
+  cardResponse.textContent='';
+});
+
+cardAction.addEventListener('click',()=>{
+  if(!currentRoom||!currentRoom.responses) return;
+  const arr = currentRoom.responses;
+  cardResponse.textContent = arr[Math.floor(Math.random()*arr.length)];
+});
+
+card.addEventListener('click',e=>{
+  if(e.target===card) card.classList.remove('open');
+});
+</script>
+</body>
+</html>
