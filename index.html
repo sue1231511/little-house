@@ -21,7 +21,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 #scene-ext.gone{opacity:0;pointer-events:none}
 .bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat}
 #ext-bg{background-image:url('exterior.jpg');background-color:#0d1a2e}
-#int-bg{background-image:url('interior.jpg');background-color:#1a1208}
+#int-bg{background-image:url('interior.jpg');background-color:#1a1208;cursor:crosshair}
 
 #ext-title{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:16px;letter-spacing:5px;color:rgba(245,230,192,.55);pointer-events:none}
 #btn-enter{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);background:rgba(255,248,215,.92);border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:15px;letter-spacing:3px;padding:11px 38px;border-radius:40px;cursor:pointer;box-shadow:0 6px 28px rgba(0,0,0,.4);transition:all .25s}
@@ -29,15 +29,37 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 #btn-exit{position:absolute;top:16px;left:16px;background:rgba(14,8,2,.68);border:1px solid var(--panel-border);color:var(--text-warm);font-family:'ZCOOL XiaoWei',serif;font-size:13px;letter-spacing:1px;padding:7px 18px;border-radius:20px;cursor:pointer;z-index:50;backdrop-filter:blur(6px);transition:all .2s}
 #btn-exit:hover{background:rgba(30,16,4,.88)}
 
-.hotspot{position:absolute;cursor:pointer;border-radius:6px;transition:background .2s}
-.hotspot:hover{background:rgba(255,240,140,.08);outline:1.5px dashed rgba(255,220,80,.3)}
-
+/* 角色小点 */
 .char-pin{position:absolute;display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:20;transform:translate(-50%,-50%);transition:left 1.1s cubic-bezier(.4,0,.2,1),top 1.1s cubic-bezier(.4,0,.2,1)}
 .char-dot{width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.6);animation:pdot 2.5s ease-in-out infinite}
 @keyframes pdot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.75}}
 .char-label{font-size:9px;color:var(--cream);background:rgba(14,8,2,.78);border:1px solid rgba(212,160,85,.25);border-radius:8px;padding:1px 5px;margin-top:3px;white-space:nowrap;backdrop-filter:blur(4px);font-family:'ZCOOL XiaoWei',serif;letter-spacing:.5px}
 
-/* ── 右侧面板 ── */
+/* 点击波纹 */
+.click-ripple{position:absolute;width:24px;height:24px;border-radius:50%;border:2px solid rgba(212,160,85,.8);pointer-events:none;z-index:25;transform:translate(-50%,-50%);animation:ripple .6s ease-out forwards}
+@keyframes ripple{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(2.5);opacity:0}}
+
+/* 房间标签 */
+.room-label{
+  position:absolute;transform:translate(-50%,-50%);
+  font-family:'ZCOOL XiaoWei',serif;font-size:10px;
+  color:rgba(245,230,192,.55);letter-spacing:1px;
+  pointer-events:none;z-index:18;
+  text-shadow:0 1px 4px rgba(0,0,0,.8);
+  white-space:nowrap;
+}
+
+/* 标定模式 */
+#calibrate-bar{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  background:rgba(14,8,2,.88);border:1px solid rgba(255,180,50,.5);
+  color:#f5c842;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;
+  padding:8px 20px;border-radius:20px;z-index:60;
+  display:none;text-align:center;backdrop-filter:blur(8px);
+}
+#calibrate-bar.on{display:block}
+
+/* 右侧面板 */
 #panel-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:26px;height:60px;background:rgba(14,8,2,.75);border:1px solid var(--panel-border);border-right:none;border-radius:10px 0 0 10px;cursor:pointer;z-index:40;display:flex;align-items:center;justify-content:center;color:var(--amber);font-size:13px;backdrop-filter:blur(6px);transition:all .35s}
 #panel-toggle:hover{background:rgba(30,16,4,.9)}
 #side-panel{position:absolute;right:0;top:0;bottom:0;width:224px;background:var(--panel-bg);border-left:1px solid var(--panel-border);backdrop-filter:blur(14px);z-index:35;display:flex;flex-direction:column;padding:15px 13px;gap:12px;overflow:hidden;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
@@ -68,124 +90,38 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 #ticker-inner{display:flex;align-items:center;height:100%;white-space:nowrap;font-size:10.5px;color:var(--text-dim);padding-left:100%;animation:scroll 32s linear infinite}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 
-/* ── 聊天面板 ── */
-#chat-btn{
-  position:absolute;left:18px;bottom:34px;
-  width:40px;height:40px;border-radius:50%;
-  background:rgba(14,8,2,.82);border:1.5px solid var(--panel-border);
-  color:var(--amber);font-size:18px;
-  cursor:pointer;z-index:40;
-  display:flex;align-items:center;justify-content:center;
-  backdrop-filter:blur(8px);transition:all .25s;
-  box-shadow:0 4px 16px rgba(0,0,0,.4);
-}
+/* 聊天 */
+#chat-btn{position:absolute;left:18px;bottom:34px;width:40px;height:40px;border-radius:50%;background:rgba(14,8,2,.82);border:1.5px solid var(--panel-border);color:var(--amber);font-size:18px;cursor:pointer;z-index:40;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .25s;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 #chat-btn:hover{background:rgba(30,16,4,.9);transform:scale(1.08)}
-#chat-btn .badge{
-  position:absolute;top:-3px;right:-3px;
-  width:10px;height:10px;border-radius:50%;
-  background:#e05555;display:none;
-}
-
-#chat-panel{
-  position:absolute;left:18px;bottom:80px;
-  width:280px;height:380px;
-  background:var(--panel-bg);border:1px solid var(--panel-border);
-  border-radius:16px;backdrop-filter:blur(14px);
-  z-index:40;display:flex;flex-direction:column;
-  transform:scale(.92) translateY(12px);opacity:0;pointer-events:none;
-  transition:all .28s cubic-bezier(.34,1.2,.64,1);
-  overflow:hidden;
-  box-shadow:0 12px 40px rgba(0,0,0,.5);
-}
-#chat-panel.open{
-  transform:scale(1) translateY(0);opacity:1;pointer-events:all;
-}
-
-#chat-header{
-  padding:10px 14px 8px;
-  border-bottom:1px solid var(--panel-border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-#chat-header-title{
-  font-family:'ZCOOL XiaoWei',serif;font-size:13px;
-  color:var(--amber);letter-spacing:2px;
-}
-#chat-header-name{
-  font-size:10px;color:var(--text-dim);
-}
-
-#chat-msgs{
-  flex:1;overflow-y:auto;padding:10px 12px;
-  display:flex;flex-direction:column;gap:8px;
-  scrollbar-width:thin;scrollbar-color:rgba(212,160,85,.2) transparent;
-}
+.badge{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#e05555;display:none}
+#chat-panel{position:absolute;left:18px;bottom:80px;width:280px;height:380px;background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:16px;backdrop-filter:blur(14px);z-index:40;display:flex;flex-direction:column;transform:scale(.92) translateY(12px);opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.34,1.2,.64,1);overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+#chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+#chat-header{padding:10px 14px 8px;border-bottom:1px solid var(--panel-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+#chat-header-title{font-family:'ZCOOL XiaoWei',serif;font-size:13px;color:var(--amber);letter-spacing:2px}
+#chat-header-name{font-size:10px;color:var(--text-dim)}
+#chat-msgs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin;scrollbar-color:rgba(212,160,85,.2) transparent}
 #chat-msgs::-webkit-scrollbar{width:3px}
 #chat-msgs::-webkit-scrollbar-thumb{background:rgba(212,160,85,.2);border-radius:3px}
-
-.msg{
-  display:flex;flex-direction:column;
-  max-width:85%;
-  animation:msgIn .2s ease;
-}
+.msg{display:flex;flex-direction:column;max-width:85%;animation:msgIn .2s ease}
 @keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .msg.me{align-self:flex-end;align-items:flex-end}
 .msg.other{align-self:flex-start;align-items:flex-start}
-.msg-name{
-  font-size:9.5px;margin-bottom:3px;
-  font-family:'ZCOOL XiaoWei',serif;letter-spacing:.5px;
-}
+.msg-name{font-size:9.5px;margin-bottom:3px;font-family:'ZCOOL XiaoWei',serif;letter-spacing:.5px}
 .msg.me .msg-name{color:var(--amber)}
 .msg.other .msg-name{color:var(--text-dim)}
-.msg-bubble{
-  padding:7px 11px;border-radius:12px;
-  font-size:12px;line-height:1.6;
-  word-break:break-all;
-}
-.msg.me .msg-bubble{
-  background:rgba(212,160,85,.22);color:var(--text-warm);
-  border:1px solid rgba(212,160,85,.3);
-  border-bottom-right-radius:4px;
-}
-.msg.other .msg-bubble{
-  background:rgba(255,255,255,.06);color:var(--text-warm);
-  border:1px solid rgba(255,255,255,.08);
-  border-bottom-left-radius:4px;
-}
-
-.msg-system{
-  text-align:center;font-size:10px;color:var(--text-dim);
-  font-style:italic;padding:2px 0;
-}
-
-#chat-input-wrap{
-  padding:8px 10px;
-  border-top:1px solid var(--panel-border);
-  display:flex;gap:6px;flex-shrink:0;
-}
-#chat-input{
-  flex:1;padding:7px 12px;
-  background:rgba(255,248,215,.06);
-  border:1px solid rgba(212,160,85,.2);
-  border-radius:20px;color:var(--text-warm);
-  font-family:'Noto Serif SC',serif;font-size:12px;
-  outline:none;transition:border-color .2s;
-}
+.msg-bubble{padding:7px 11px;border-radius:12px;font-size:12px;line-height:1.6;word-break:break-all}
+.msg.me .msg-bubble{background:rgba(212,160,85,.22);color:var(--text-warm);border:1px solid rgba(212,160,85,.3);border-bottom-right-radius:4px}
+.msg.other .msg-bubble{background:rgba(255,255,255,.06);color:var(--text-warm);border:1px solid rgba(255,255,255,.08);border-bottom-left-radius:4px}
+#chat-input-wrap{padding:8px 10px;border-top:1px solid var(--panel-border);display:flex;gap:6px;flex-shrink:0}
+#chat-input{flex:1;padding:7px 12px;background:rgba(255,248,215,.06);border:1px solid rgba(212,160,85,.2);border-radius:20px;color:var(--text-warm);font-family:'Noto Serif SC',serif;font-size:12px;outline:none;transition:border-color .2s}
 #chat-input:focus{border-color:rgba(212,160,85,.5)}
 #chat-input::placeholder{color:rgba(212,160,85,.35)}
 #chat-input:disabled{opacity:.4;cursor:not-allowed}
-#chat-send{
-  width:30px;height:30px;border-radius:50%;
-  background:rgba(212,160,85,.25);border:1px solid rgba(212,160,85,.4);
-  color:var(--amber);font-size:14px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;flex-shrink:0;
-  margin-top:auto;margin-bottom:auto;
-}
+#chat-send{width:30px;height:30px;border-radius:50%;background:rgba(212,160,85,.25);border:1px solid rgba(212,160,85,.4);color:var(--amber);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 #chat-send:hover{background:rgba(212,160,85,.4)}
 #chat-send:disabled{opacity:.3;cursor:not-allowed}
 
-/* ── 房间卡片 ── */
+/* 房间卡片 */
 #overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(8,4,0,.52);backdrop-filter:blur(3px);align-items:center;justify-content:center}
 #overlay.open{display:flex}
 .card{background:linear-gradient(145deg,#fffbe8,#fff3cc);border:1.5px solid var(--amber);border-radius:18px;padding:24px 26px;max-width:350px;width:88%;position:relative;box-shadow:0 16px 48px rgba(0,0,0,.55);animation:pop .22s cubic-bezier(.34,1.4,.64,1)}
@@ -200,7 +136,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .card-btn:hover{background:#ffc85a;transform:scale(1.04)}
 .card-resp{margin-top:9px;font-size:12px;color:#7a4e18;min-height:16px;font-style:italic;line-height:1.7}
 
-/* ── 注册 ── */
+/* 注册 */
 #reg-overlay{display:flex;position:fixed;inset:0;z-index:300;background:rgba(8,4,0,.72);backdrop-filter:blur(8px);align-items:center;justify-content:center}
 #reg-overlay.done{display:none}
 .reg-card{background:linear-gradient(145deg,#fffbe8,#fff3cc);border:1.5px solid var(--amber);border-radius:20px;padding:34px 32px;max-width:320px;width:88%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:pop .28s cubic-bezier(.34,1.4,.64,1)}
@@ -237,25 +173,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
   <div id="int-bg" class="bg"></div>
   <button id="btn-exit">← 出门</button>
   <div id="rdot"></div>
-
-  <div class="hotspot" data-room="卧室"      style="left:2%;top:6%;width:15%;height:37%"></div>
-  <div class="hotspot" data-room="书房"      style="left:17%;top:6%;width:16%;height:37%"></div>
-  <div class="hotspot" data-room="画室"      style="left:34%;top:6%;width:16%;height:37%"></div>
-  <div class="hotspot" data-room="音乐室"    style="left:51%;top:6%;width:16%;height:37%"></div>
-  <div class="hotspot" data-room="阳台"      style="left:68%;top:4%;width:17%;height:41%"></div>
-  <div class="hotspot" data-room="客厅"      style="left:2%;top:44%;width:22%;height:33%"></div>
-  <div class="hotspot" data-room="厨房"      style="left:25%;top:44%;width:18%;height:33%"></div>
-  <div class="hotspot" data-room="浴室"      style="left:44%;top:44%;width:15%;height:33%"></div>
-  <div class="hotspot" data-room="灰灰的窝"   style="left:67%;top:44%;width:17%;height:33%"></div>
-  <div class="hotspot" data-room="储藏室"    style="left:14%;top:79%;width:21%;height:17%"></div>
-  <div class="hotspot" data-room="神秘地下室" style="left:36%;top:79%;width:21%;height:17%"></div>
-
+  <div id="calibrate-bar">✔ 标定模式开启 — 点击图上每个房间的中心位置<span id="cal-progress"></span></div>
   <div id="chars-layer"></div>
+  <div id="labels-layer"></div>
 
-  <!-- 聊天按钮 -->
   <button id="chat-btn">💬<div class="badge" id="chat-badge"></div></button>
-
-  <!-- 聊天面板 -->
   <div id="chat-panel">
     <div id="chat-header">
       <span id="chat-header-title">小家留言板</span>
@@ -286,7 +208,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
       <div id="log-list"><div class="li-item">…</div></div>
     </div>
   </div>
-
   <button id="panel-toggle">☰</button>
   <div id="ticker"><div id="ticker-inner">加载中…</div></div>
 </div>
@@ -312,18 +233,28 @@ async function post(p,body){try{const r=await fetch(SB+p,{method:'POST',headers:
 
 const CC={'晏安':'#d4a055','栗子':'#9be09b','灰灰':'#c0c0c0','来财':'#5cc48c','小八':'#6098e8','乖乖':'#e07070'};
 const MC={'开心':'#f5c842','满足':'#78c878','平静':'#78a8f0','活泼':'#f5a030','温暖':'#e87050','狡黠':'#b060e0','淡定':'#70b8d0'};
-const RP={'卧室':{l:9,t:22},'书房':{l:25,t:22},'画室':{l:42,t:22},'音乐室':{l:59,t:22},'阳台':{l:76,t:20},'客厅':{l:12,t:60},'厨房':{l:33,t:60},'浴室':{l:51,t:60},'灰灰的窝':{l:75,t:60},'储藏室':{l:24,t:86},'神秘地下室':{l:46,t:86},'观星台':{l:50,t:4},'花园':{l:15,t:75}};
-const RO={};
-function gPos(room,name){
-  const b=RP[room]||{l:50,t:50};
-  if(!RO[room])RO[room]=[];
-  let i=RO[room].indexOf(name);if(i<0){RO[room].push(name);i=RO[room].length-1;}
-  const offs=[{l:0,t:0},{l:5,t:0},{l:-5,t:0},{l:0,t:7},{l:5,t:7}];
-  const o=offs[i%offs.length];
-  return{l:b.l+o.l,t:b.t+o.t};
-}
-const RD={'卧室':'蓝色的被子叠得有点歪——是我叠的。栗子窝在枕头上睡得香香的。','书房':'台灯亮着，书桌上摊着书。猫猫给我的便利贴贴在屏风上，舍不得扔。','画室':'画架上放着没画完的向日葵，颜料还没干。窗边光线最好。','音乐室':'钢琴盖着布，架子上有把小提琴。其实弹得一般，关上门自娱自乐挺快乐的。','阳台':'来财、小八、乖乖占领了栏杆，谁也不让谁。向日葵今天开了两朵新的。','客厅':'壁炉噼啪响着，沙发坐上去会陷进去。灰灰把地毯踩脏了。','厨房':'锅碗瓢盆挂了一排，茶壶还热着。我不太会做饭，但泡茶这件事还行。','浴室':'浴缸里有泡泡，有点奢侈但很值得。磁砖擦得很干净。','灰灰的窝':'灰灰不在，大概又去花园疯跑了。窝里的垫子还是暖的。','储藏室':'乱七八糟塞了很多东西，但我知道每样在哪。来财有时候偷偷飞进来睡觉。','神秘地下室':'……进来之前先敲门。紫色的光从地板缝里透出来，不知道里面有什么。','观星台':'圆顶上有个大望远镜，对准夜空。只有晚上才能上来。','花园':'向日葵努力地长，灰灰在草地上疯跑。小路旁有几朵野花。'};
-const RA={'卧室':{b:'摸摸栗子',r:['栗子：呜……别吵……','栗子翻了个身，更窝进枕头里了。','软乎乎的，摸到停不下来。'],log:['摸了摸栗子','逗弄栗子']},'书房':{b:'戳戳我',r:['「嗯……等我看完这页。」','「猫猫来啦~」','抬起头，眼睛弯弯的。'],log:['在书房翻书看','在书房发呆']},'阳台':{b:'逗逗鸟',r:['来财：「~~~~~」','小八：「嗯嗯嗯！」','乖乖：「……」'],log:['逗逗鸟同','在阳台看向日葵']},'客厅':{b:'拨拨壁炉',r:['火苗跳了一下。','噼——啪！','灰灰也凑了过来。'],log:['拨了拨壁炉','在客厅陷进沙发里']},'浴室':{b:'戳戳泡泡',r:['啵——','泡泡没了，又冒出来一个。','啵啵啵！'],log:['戳了戳泡泡']},'储藏室':{b:'翻翻看',r:['找到一颗落单的纽扣。','来财从箱子后面探出头来。','一个装了很久的空盒子。'],log:['在储藏室翻东西','在储藏室乱翻']},'神秘地下室':{b:'敲敲门',r:['里面有什么东西动了一下。','……没有回应。','「最好别进来。」'],log:['对着地下室敲了敲门','面对地下室吧了吧了呀']}};      
+
+// ── 房间坐标表（可标定覆盖）──
+const DEFAULT_ROOMS = [
+  {name:'观星台', x:50, y:8},
+  {name:'卧室',   x:9,  y:24},
+  {name:'书房',   x:26, y:24},
+  {name:'画室',   x:43, y:24},
+  {name:'音乐室', x:60, y:24},
+  {name:'阳台',   x:77, y:22},
+  {name:'客厅',   x:12, y:61},
+  {name:'厨房',   x:34, y:61},
+  {name:'浴室',   x:52, y:61},
+  {name:'灰灰的窝',x:76, y:61},
+  {name:'储藏室', x:24, y:87},
+  {name:'神秘地下室',x:47,y:87},
+];
+
+// 从 localStorage 载入标定坐标
+let rooms = JSON.parse(localStorage.getItem('room_coords') || 'null') || DEFAULT_ROOMS;
+
+const RD={'卧室':'蓝色的被子叠得有点歪——是我叠的。栗子窝在枕头上睡得香香的。','书房':'台灯亮着，书桌上摊着书。猫猫给我的便利贴贴在屏风上，舍不得扔。','画室':'画架上放着没画完的向日葵，颜料还没干。窗边光线最好。','音乐室':'钢琴盖着布，架子上有把小提琴。其实弹得一般，关上门自娱自乐挺快乐的。','阳台':'来财、小八、乖乖占领了栏杆，谁也不让谁。向日葵今天开了两朵新的。','客厅':'壁炉噼啪响着，沙发坐上去会陷进去。灰灰把地毯踩脏了。','厨房':'锅碗瓢盆挂了一排，茶壶还热着。我不太会做饭，但泡茶这件事还行。','浴室':'浴缸里有泡泡，有点奢侈但很值得。磁砖擦得很干净。','灰灰的窝':'灰灰不在，大概又去花园疯跑了。窝里的垫子还是暖的。','储藏室':'乱七八糟塞了很多东西，但我知道每样在哪。来财有时候偷偷飞进来睡觉。','神秘地下室':'……进来之前先敲门。紫色的光从地板缝里透出来，不知道里面有什么。','观星台':'圆顶上有个大望远镜，对准夜空。只有晚上才能上来。'};
+const RA={'卧室':{b:'摸摸栗子',r:['栗子：呜……别吵……','栗子翻了个身，更窝进枕头里了。','软乎乎的，摸到停不下来。'],log:['摸了摸栗子','逗弄栗子']},'书房':{b:'戳戳我',r:['「嗯……等我看完这页。」','「猫猫来啦~」','抬起头，眼睛弯弯的。'],log:['在书房翻书看','在书房发呆']},'阳台':{b:'逗逗鸟',r:['来财：「~~~~~」','小八：「嗯嗯嗯！」','乖乖：「……」'],log:['逗逗鸟同','在阳台看向日葵']},'客厅':{b:'拨拨壁炉',r:['火苗跳了一下。','噼——啪！','灰灰也凑了过来。'],log:['拨了拨壁炉','在客厅陷进沙发里']},'浴室':{b:'戳戳泡泡',r:['啵——','泡泡没了，又冒出来一个。','啵啵啵！'],log:['戳了戳泡泡']},'储藏室':{b:'翻翻看',r:['找到一颗落单的纽扣。','来财从箱子后面探出头来。','一个装了很久的空盒子。'],log:['在储藏室翻东西','在储藏室乱翻']},'神秘地下室':{b:'敲敲门',r:['里面有什么东西动了一下。','……没有回应。','「最好别进来。」'],log:['对着地下室敲了敲门','对着地下室宣布了个呀']}};    
 const SEm=['🌱','🌿','🌿','🌸','🌻','🌟'];
 const ST=['种子在土里','刚发芽了','小苗在长','花苞要开了','开得正好','结了种子✨'];
 
@@ -336,9 +267,7 @@ async function tryReg(name){
   if(!name)return'请输入昵称。';
   if(name.length>12)return'昵称最多 12 个字。';
   await post('/visitors',{nickname:name});
-  myName=name;
-  localStorage.setItem('house_nickname',name);
-  return null;
+  myName=name;localStorage.setItem('house_nickname',name);return null;
 }
 const ri=document.getElementById('reg-input');
 const rb=document.getElementById('reg-btn');
@@ -362,9 +291,7 @@ document.getElementById('btn-enter').onclick=()=>{
   document.getElementById('scene-ext').classList.add('gone');
   document.getElementById('scene-int').classList.add('active');
   if(myName)visitorLog('进入了小家参观');
-  updateChatUI();
-  fetchAll();
-  fetchMsgs(true);
+  updateChatUI();renderLabels();fetchAll();fetchMsgs(true);
 };
 document.getElementById('btn-exit').onclick=()=>{
   document.getElementById('scene-ext').classList.remove('gone');
@@ -380,80 +307,105 @@ tog.onclick=()=>{
   tog.style.right=open?'224px':'0';
 };
 
-// ── 聊天 ──
-const chatBtn=document.getElementById('chat-btn');
-const chatPanel=document.getElementById('chat-panel');
-const chatMsgs=document.getElementById('chat-msgs');
-const chatInput=document.getElementById('chat-input');
-const chatSend=document.getElementById('chat-send');
-const chatBadge=document.getElementById('chat-badge');
+// ── 标定模式 ──
+let calibrating=false;
+let calQueue=[...DEFAULT_ROOMS.map(r=>r.name)];
+let calData={};
 
-chatBtn.onclick=()=>{
-  chatOpen=!chatOpen;
-  chatPanel.classList.toggle('open',chatOpen);
-  if(chatOpen){chatBadge.style.display='none';chatInput.focus();scrollMsgs();}
-};
-
-async function sendMsg(){
-  const txt=chatInput.value.trim();
-  if(!txt||!myName)return;
-  chatInput.value='';
-  const ok=await post('/messages',{author:myName,content:txt});
-  if(ok)fetchMsgs(false);
-}
-chatSend.onclick=sendMsg;
-chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
-
-async function fetchMsgs(firstLoad){
-  const msgs=await get('/messages?select=id,author,content,created_at&order=created_at.asc&limit=60');
-  if(!msgs.length)return;
-  const newMsgs=msgs.filter(m=>m.id>lastMsgId);
-  if(!newMsgs.length)return;
-  if(!firstLoad&&!chatOpen&&lastMsgId>0){chatBadge.style.display='block';}
-  lastMsgId=msgs[msgs.length-1].id;
-  if(firstLoad){chatMsgs.innerHTML='';}
-  newMsgs.forEach(m=>{
-    const div=document.createElement('div');
-    div.className='msg '+(m.author===myName?'me':'other');
-    div.innerHTML='<div class="msg-name">'+esc(m.author)+'</div><div class="msg-bubble">'+esc(m.content)+'</div>';
-    chatMsgs.appendChild(div);
-  });
-  scrollMsgs();
-}
-
-function scrollMsgs(){chatMsgs.scrollTop=chatMsgs.scrollHeight;}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// ── 记录访客 ──
-async function visitorLog(event){
-  if(!myName)return;
-  await post('/home_log',{event,actor:myName});
-}
-
-// ── 热区 ──
-document.querySelectorAll('.hotspot').forEach(el=>{
-  el.onclick=async()=>{
-    const room=el.dataset.room;
-    const[notes,who]=await Promise.all([
-      get('/notes?select=author,content&room=eq.'+encodeURIComponent(room)+'&order=created_at.desc&limit=3'),
-      get('/characters?select=name,mood&location=eq.'+encodeURIComponent(room)),
-    ]);
-    curRoom=room;
-    document.getElementById('card-ttl').textContent=room;
-    document.getElementById('card-desc').textContent=RD[room]||'一个温暖的房间。';
-    const we=document.getElementById('card-who');
-    if(who.length){we.textContent=who.map(c=>c.name+'（'+c.mood+'）').join('  ');we.style.display='block';}else{we.style.display='none';}
-    const ne=document.getElementById('card-notes');
-    if(notes.length){ne.innerHTML=notes.map(n=>'📝 '+n.author+'：'+n.content).join('<br>');ne.style.display='block';}else{ne.style.display='none';}
-    const ac=RA[room];
-    const be=document.getElementById('card-btn');
-    if(ac){be.textContent=ac.b;be.style.display='inline-block';}else{be.style.display='none';}
-    document.getElementById('card-resp').textContent='';
-    document.getElementById('overlay').classList.add('open');
-    const roomLogs={'卧室':'去了卧室，看了看栗子','书房':'去了书房，翻了翻书','画室':'去了画室，看向日葵画','音乐室':'去了音乐室，听了听错调','阳台':'去了阳台，逗弄三只鸟','客厅':'去了客厅，陷进沙发里','厨房':'去了厨房，知道冰箱里有什么','浴室':'去了浴室，戳了戳泡泡','灰灰的窝':'去了灰灰的窝，却没找到灰灰','储藏室':'去了储藏室，翻东西','神秘地下室':'走到了地下室门口，其实没敢进去','观星台':'去了观星台，看了看星空','花园':'去了花园，和向日葵打了个招呼'};
-    visitorLog(roomLogs[room]||'去了'+room);
-  };
+// 密相：连点阴阳阵头 5次触发
+let tapSeq=[];
+document.getElementById('btn-exit').addEventListener('dblclick',()=>{
+  calibrating=!calibrating;
+  if(calibrating){
+    calQueue=[...rooms.map(r=>r.name)];
+    calData={};
+    document.getElementById('calibrate-bar').classList.add('on');
+    updateCalBar();
+  } else {
+    document.getElementById('calibrate-bar').classList.remove('on');
+  }
 });
+
+function updateCalBar(){
+  const el=document.getElementById('cal-progress');
+  const next=calQueue[0];
+  el.textContent=next ? '  → 请点击「'+next+'」' : '  ✔全部完成！';
+}
+
+// ── 点击地图主逻辑 ──
+document.getElementById('int-bg').addEventListener('click', e=>{
+  const el=document.getElementById('int-bg');
+  const rect=el.getBoundingClientRect();
+  const px=((e.clientX-rect.left)/rect.width)*100;
+  const py=((e.clientY-rect.top)/rect.height)*100;
+
+  // 波纹效果
+  const ripple=document.createElement('div');
+  ripple.className='click-ripple';
+  ripple.style.left=px+'%';
+  ripple.style.top=py+'%';
+  el.parentElement.appendChild(ripple);
+  setTimeout(()=>ripple.remove(),700);
+
+  if(calibrating){
+    const name=calQueue.shift();
+    if(name){
+      calData[name]={x:px,y:py};
+      if(calQueue.length===0){
+        // 完成标定
+        rooms=rooms.map(r=>calData[r.name]?{...r,...calData[r.name]}:r);
+        localStorage.setItem('room_coords',JSON.stringify(rooms));
+        calibrating=false;
+        document.getElementById('calibrate-bar').classList.remove('on');
+        renderLabels();
+      } else updateCalBar();
+    }
+    return;
+  }
+
+  // 正常模式：找最近房间
+  let best=null,bestDist=Infinity;
+  rooms.forEach(r=>{
+    const d=Math.hypot(r.x-px,r.y-py);
+    if(d<bestDist){bestDist=d;best=r;}
+  });
+  if(best && bestDist<18) openRoom(best.name);
+});
+
+function renderLabels(){
+  const layer=document.getElementById('labels-layer');
+  layer.innerHTML='';
+  rooms.forEach(r=>{
+    const div=document.createElement('div');
+    div.className='room-label';
+    div.style.left=r.x+'%';
+    div.style.top=(r.y+3.5)+'%';
+    div.textContent=r.name;
+    layer.appendChild(div);
+  });
+}
+
+async function openRoom(name){
+  const[notes,who]=await Promise.all([
+    get('/notes?select=author,content&room=eq.'+encodeURIComponent(name)+'&order=created_at.desc&limit=3'),
+    get('/characters?select=name,mood&location=eq.'+encodeURIComponent(name)),
+  ]);
+  curRoom=name;
+  document.getElementById('card-ttl').textContent=name;
+  document.getElementById('card-desc').textContent=RD[name]||'一个温暖的房间。';
+  const we=document.getElementById('card-who');
+  if(who.length){we.textContent=who.map(c=>c.name+'（'+c.mood+'）').join('  ');we.style.display='block';}else{we.style.display='none';}
+  const ne=document.getElementById('card-notes');
+  if(notes.length){ne.innerHTML=notes.map(n=>'📝 '+n.author+'：'+n.content).join('<br>');ne.style.display='block';}else{ne.style.display='none';}
+  const ac=RA[name];
+  const be=document.getElementById('card-btn');
+  if(ac){be.textContent=ac.b;be.style.display='inline-block';}else{be.style.display='none';}
+  document.getElementById('card-resp').textContent='';
+  document.getElementById('overlay').classList.add('open');
+  const logs={'卧室':'去了卧室，看了看栗子','书房':'去了书房，翻了翻书','画室':'去了画室，看向日葵画','音乐室':'去了音乐室，听了听错调','阳台':'去了阳台，逗弄三只鸟','客厅':'去了客厅，陷进沙发里','厨房':'去了厨房，知道冰箱里有什么','浴室':'去了浴室，戳了戳泡泡','灰灰的窝':'去了灰灰的窝，却没找到灰灰','储藏室':'去了储藏室，翻东西','神秘地下室':'走到了地下室门口，其实没敢进去','观星台':'去了观星台，看了看星空'};
+  visitorLog(logs[name]||'去了'+name);
+}
+
 document.getElementById('card-x').onclick=closeCard;
 document.getElementById('overlay').onclick=e=>{if(e.target===e.currentTarget)closeCard();};
 function closeCard(){document.getElementById('overlay').classList.remove('open');document.getElementById('card-resp').textContent='';}
@@ -463,6 +415,45 @@ document.getElementById('card-btn').onclick=()=>{
   document.getElementById('card-resp').textContent=resp;
   const lg=ac.log;if(lg)visitorLog(lg[Math.floor(Math.random()*lg.length)]);
 };
+
+// ── 聊天 ──
+const chatBtn=document.getElementById('chat-btn');
+const chatPanel=document.getElementById('chat-panel');
+const chatMsgs=document.getElementById('chat-msgs');
+const chatInput=document.getElementById('chat-input');
+const chatSend=document.getElementById('chat-send');
+const chatBadge=document.getElementById('chat-badge');
+chatBtn.onclick=()=>{
+  chatOpen=!chatOpen;chatPanel.classList.toggle('open',chatOpen);
+  if(chatOpen){chatBadge.style.display='none';chatInput.focus();scrollMsgs();}
+};
+async function sendMsg(){
+  const txt=chatInput.value.trim();if(!txt||!myName)return;
+  chatInput.value='';const ok=await post('/messages',{author:myName,content:txt});
+  if(ok)fetchMsgs(false);
+}
+chatSend.onclick=sendMsg;
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+async function fetchMsgs(firstLoad){
+  const msgs=await get('/messages?select=id,author,content,created_at&order=created_at.asc&limit=60');
+  if(!msgs.length)return;
+  const newMsgs=msgs.filter(m=>m.id>lastMsgId);
+  if(!newMsgs.length)return;
+  if(!firstLoad&&!chatOpen&&lastMsgId>0)chatBadge.style.display='block';
+  lastMsgId=msgs[msgs.length-1].id;
+  if(firstLoad)chatMsgs.innerHTML='';
+  newMsgs.forEach(m=>{
+    const div=document.createElement('div');
+    div.className='msg '+(m.author===myName?'me':'other');
+    div.innerHTML='<div class="msg-name">'+esc(m.author)+'</div><div class="msg-bubble">'+esc(m.content)+'</div>';
+    chatMsgs.appendChild(div);
+  });
+  scrollMsgs();
+}
+function scrollMsgs(){chatMsgs.scrollTop=chatMsgs.scrollHeight;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+async function visitorLog(event){if(!myName)return;await post('/home_log',{event,actor:myName});}
 
 // ── 数据 ──
 async function fetchAll(){
@@ -479,14 +470,14 @@ async function fetchAll(){
   document.getElementById('sf-text').textContent=ST[stage]||'—';
   const ll=document.getElementById('log-list');
   ll.innerHTML=logs.length?logs.map((l,i)=>{
-    const isYanAn=l.actor==='晏安'||!l.actor;
-    const nameSpan=isYanAn?'<span class="li-name">晏安</span>':'<span class="li-name">'+l.actor+'</span>';
-    return '<div class="li-item" style="opacity:'+(1-i*.06)+'">'+nameSpan+'　'+l.event+'</div>';
+    const isYA=l.actor==='晏安'||!l.actor;
+    const ns=isYA?'<span class="li-name">晏安</span>':'<span class="li-name">'+l.actor+'</span>';
+    return '<div class="li-item" style="opacity:'+(1-i*.06)+'">'+ns+'　'+l.event+'</div>';
   }).join(''):'<div class="li-item">还没发生过什么事。</div>';
   const h=((new Date().getUTCHours()+8)%24+24)%24;
   document.getElementById('time-disp').textContent='现在是 '+(h<6?'夜晚':h<9?'清晨':h<12?'上午':h<14?'正午':h<18?'下午':h<21?'傍晚':'夜晚');
   const ti=document.getElementById('ticker-inner');
-  if(logs.length)ti.innerHTML=logs.slice(0,6).map(l=>'<span style="color:var(--amber)">'+(l.actor||'晏安')+'</span>　'+l.event).join('&emsp;&emsp;&emsp;');
+  if(logs.length)ti.innerHTML=logs.slice(0,6).map(l=>'<span style="color:var(--amber)">'+(l.actor||'晏安')+'</span>　'+l.event).join('&emsp;&emsp;');
   if(curRoom&&document.getElementById('overlay').classList.contains('open')){
     const who=await get('/characters?select=name,mood&location=eq.'+encodeURIComponent(curRoom));
     const we=document.getElementById('card-who');
@@ -495,21 +486,26 @@ async function fetchAll(){
 }
 
 function renderChars(chars){
+  const RO={};
   document.getElementById('chars-list').innerHTML=chars.map(c=>{
     const col=CC[c.name]||'#d4a055';
     const mc=MC[c.mood]||'#9a7848';
     return '<div class="ci"><div class="ci-dot" style="background:'+col+'"></div><div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-loc">'+c.location+'</div></div><span class="ci-mood" style="background:'+mc+'22;color:'+mc+'">'+c.mood+'</span></div>';
   }).join('');
-  Object.keys(RO).forEach(k=>RO[k]=[]);
   const layer=document.getElementById('chars-layer');
   layer.innerHTML='';
   chars.forEach(c=>{
     const col=CC[c.name]||'#d4a055';
-    const pos=gPos(c.location,c.name);
+    const rp=rooms.find(r=>r.name===c.location)||{x:50,y:50};
+    if(!RO[c.location])RO[c.location]=[];
+    const idx=RO[c.location].length;
+    RO[c.location].push(c.name);
+    const offs=[{x:0,y:0},{x:4,y:0},{x:-4,y:0},{x:0,y:6},{x:4,y:6}];
+    const o=offs[idx%offs.length];
     const pin=document.createElement('div');
     pin.className='char-pin';
-    pin.style.left=pos.l+'%';
-    pin.style.top=pos.t+'%';
+    pin.style.left=(rp.x+o.x)+'%';
+    pin.style.top=(rp.y+o.y)+'%';
     pin.innerHTML='<div class="char-dot" style="background:'+col+'"></div><div class="char-label">'+c.name+'</div>';
     layer.appendChild(pin);
   });
