@@ -15,28 +15,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 #scene-int.active{opacity:1;pointer-events:all}
 #scene-ext.gone{opacity:0;pointer-events:none}
 
-/* 封面：完整显示不裁剪 */
+/* 封面 */
 #ext-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--night)}
 #ext-img{display:block;max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
-#ext-title{position:absolute;top:5%;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:16px;letter-spacing:5px;color:rgba(245,230,192,.65);pointer-events:none;white-space:nowrap}
-#btn-enter{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);background:rgba(255,248,215,.92);border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:15px;letter-spacing:3px;padding:11px 38px;border-radius:40px;cursor:pointer;box-shadow:0 6px 28px rgba(0,0,0,.4);transition:all .25s}
+/* 标题可点击，要放在图片上面 */
+#ext-title{position:absolute;top:5%;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:16px;letter-spacing:5px;color:rgba(245,230,192,.7);white-space:nowrap;cursor:default;z-index:20;user-select:none;background:rgba(0,0,0,.01)}
+#btn-enter{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);background:rgba(255,248,215,.92);border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:15px;letter-spacing:3px;padding:11px 38px;border-radius:40px;cursor:pointer;box-shadow:0 6px 28px rgba(0,0,0,.4);transition:all .25s;z-index:20}
 #btn-enter:hover{background:#fff7d0;transform:translateX(-50%) scale(1.04)}
 
-/* 室内：图片+ticker组合居中 */
+/* 室内图片+ticker组合 */
 #int-main{position:relative;display:flex;flex-direction:column;align-items:center;max-width:100%;max-height:100%}
 #int-img{display:block;max-width:100%;max-height:calc(100vh - 80px);object-fit:contain;cursor:crosshair;user-select:none;-webkit-user-drag:none}
 #int-overlay{position:absolute;pointer-events:none;z-index:10}
 
-/* ticker 紧跟图片下方 */
+/* ticker紧跟图片下方 */
 #ticker{width:100%;height:26px;background:rgba(10,6,2,.85);border-top:1px solid var(--panel-border);overflow:hidden;flex-shrink:0}
 #ticker-inner{display:flex;align-items:center;height:100%;white-space:nowrap;font-size:10.5px;color:var(--text-dim);padding-left:100%;animation:scroll 32s linear infinite}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 
-/* 顶部按钮区 */
 #btn-exit{position:absolute;top:14px;left:14px;background:rgba(14,8,2,.68);border:1px solid var(--panel-border);color:var(--text-warm);font-family:'ZCOOL XiaoWei',serif;font-size:13px;letter-spacing:1px;padding:7px 18px;border-radius:20px;cursor:pointer;z-index:50;backdrop-filter:blur(6px);transition:all .2s}
 #btn-exit:hover{background:rgba(30,16,4,.88)}
 
-/* 角色圆点 */
 .char-pin{position:absolute;display:flex;flex-direction:column;align-items:center;pointer-events:none;transform:translate(-50%,-50%);transition:left .9s cubic-bezier(.4,0,.2,1),top .9s cubic-bezier(.4,0,.2,1)}
 .char-dot{width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.6);animation:pdot 2.5s ease-in-out infinite}
 .char-dot.visitor{width:8px;height:8px;background:#ffffff;opacity:.85}
@@ -44,24 +43,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .char-label{font-size:9px;color:var(--cream);background:rgba(14,8,2,.78);border:1px solid rgba(212,160,85,.25);border-radius:8px;padding:1px 5px;margin-top:3px;white-space:nowrap;backdrop-filter:blur(4px);font-family:'ZCOOL XiaoWei',serif;letter-spacing:.5px}
 .char-label.visitor{border-color:rgba(255,255,255,.2);color:rgba(245,230,192,.8)}
 
-/* 点击波纹 */
 .ripple{position:absolute;width:20px;height:20px;border-radius:50%;border:2px solid rgba(212,160,85,.9);pointer-events:none;z-index:25;transform:translate(-50%,-50%);animation:rpl .6s ease-out forwards}
 @keyframes rpl{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(3);opacity:0}}
 
-/* hover提示 */
 #hover-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:12px;color:rgba(245,230,192,.7);background:rgba(14,8,2,.6);padding:4px 14px;border-radius:20px;pointer-events:none;backdrop-filter:blur(6px);letter-spacing:1px;opacity:0;transition:opacity .2s;z-index:30}
 #hover-hint.show{opacity:1}
-
-/* toast */
 #toast{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:rgba(80,140,80,.92);color:#d4f5d4;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;padding:8px 22px;border-radius:20px;z-index:70;display:none;pointer-events:none;white-space:nowrap}
 #toast.show{display:block;animation:toastIn .3s ease}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-
-/* 坐标调整模式提示条 */
 #adj-bar{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:rgba(14,8,2,.9);border:1px solid rgba(245,200,66,.4);color:#f5c842;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;padding:8px 20px;border-radius:20px;z-index:60;display:none;text-align:center;backdrop-filter:blur(8px);white-space:nowrap;pointer-events:none}
 #adj-bar.on{display:block}
 
-/* 右侧面板 */
 #panel-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:26px;height:60px;background:rgba(14,8,2,.75);border:1px solid var(--panel-border);border-right:none;border-radius:10px 0 0 10px;cursor:pointer;z-index:40;display:flex;align-items:center;justify-content:center;color:var(--amber);font-size:13px;backdrop-filter:blur(6px);transition:all .35s}
 #panel-toggle:hover{background:rgba(30,16,4,.9)}
 #side-panel{position:absolute;right:0;top:0;bottom:0;width:224px;background:var(--panel-bg);border-left:1px solid var(--panel-border);backdrop-filter:blur(14px);z-index:35;display:flex;flex-direction:column;padding:15px 13px;gap:12px;overflow:hidden;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
@@ -87,7 +79,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 #rdot.pulse{background:#f5a623;animation:rp .5s ease}
 @keyframes rp{0%,100%{transform:scale(1)}50%{transform:scale(2)}}
 
-/* 聊天 */
 #chat-btn{position:absolute;left:18px;bottom:34px;width:40px;height:40px;border-radius:50%;background:rgba(14,8,2,.82);border:1.5px solid var(--panel-border);color:var(--amber);font-size:18px;cursor:pointer;z-index:40;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .25s;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 #chat-btn:hover{background:rgba(30,16,4,.9);transform:scale(1.08)}
 .badge{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#e05555;display:none}
@@ -118,7 +109,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 #chat-send:hover{background:rgba(212,160,85,.4)}
 #chat-send:disabled{opacity:.3;cursor:not-allowed}
 
-/* 房间卡片 */
 #overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(8,4,0,.52);backdrop-filter:blur(3px);align-items:center;justify-content:center}
 #overlay.open{display:flex}
 .card{background:linear-gradient(145deg,#fffbe8,#fff3cc);border:1.5px solid var(--amber);border-radius:18px;padding:24px 26px;max-width:350px;width:88%;position:relative;box-shadow:0 16px 48px rgba(0,0,0,.55);animation:pop .22s cubic-bezier(.34,1.4,.64,1)}
@@ -156,11 +146,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .reg-err{font-size:11px;color:#c05030;margin-top:8px;min-height:16px}
 .reg-visitor{font-size:11px;color:#9a7040;margin-top:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
-/* 手机适配 */
 @media(max-width:600px){
   #side-panel{width:190px}
-  .sec-title{font-size:10px}
-  .ci-name{font-size:10px}
   #chat-panel{width:240px;height:320px}
   #ext-title{font-size:13px;letter-spacing:3px}
   #btn-enter{font-size:13px;padding:10px 28px;letter-spacing:2px}
@@ -193,7 +180,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
   <div id="ext-wrap">
     <img id="ext-img" src="exterior.jpg" draggable="false">
   </div>
-  <div id="ext-title" id="ext-title-click">晏 安 的 小 家</div>
+  <div id="ext-title">晏 安 的 小 家</div>
   <button id="btn-enter">✦ 进门逛逛 ✦</button>
 </div>
 
@@ -203,13 +190,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
     <div id="int-overlay"></div>
     <div id="ticker"><div id="ticker-inner">加载中…</div></div>
   </div>
-
   <button id="btn-exit">← 出门</button>
   <div id="rdot"></div>
   <div id="toast"></div>
   <div id="adj-bar"></div>
   <div id="hover-hint"></div>
-
   <button id="chat-btn">💬<div class="badge" id="chat-badge"></div></button>
   <div id="chat-panel">
     <div id="chat-header"><span id="chat-header-title">小家留言板</span><span id="chat-header-name"></span></div>
@@ -219,7 +204,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
       <button id="chat-send">↳</button>
     </div>
   </div>
-
   <div id="side-panel">
     <div><div class="sec-title">✦ 晏安的小家</div><div id="time-disp">—</div></div>
     <div><div class="sec-title">📍 家里的人</div><div id="chars-list"><div class="li-item">加载中…</div></div></div>
@@ -247,7 +231,6 @@ const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6
 const H={apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'};
 async function get(p){try{const r=await fetch(SB+p,{headers:H});return r.ok?r.json():[]}catch{return[]}}
 async function post(p,body){try{const r=await fetch(SB+p,{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify(body)});return r.ok}catch{return false}}
-async function patch(p,body){try{const r=await fetch(SB+p,{method:'PATCH',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify(body)});return r.ok}catch{return false}}
 async function upsert(p,body){try{const r=await fetch(SB+p,{method:'POST',headers:{...H,Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(body)});return r.ok}catch{return false}}
 
 const CC={'晏安':'#d4a055','栗子':'#9be09b','灰灰':'#c0c0c0','来财':'#5cc48c','小八':'#6098e8','乖乖':'#e07070'};
@@ -260,7 +243,6 @@ const DEFAULT_ROOMS=[
   {name:'灰灰的窝',x:76,y:61},{name:'储藏室',x:24,y:87},{name:'神秘地下室',x:47,y:87},
 ];
 let rooms=[...DEFAULT_ROOMS];
-
 async function loadCoords(){
   const data=await get('/room_coords?select=name,x,y');
   if(data&&data.length>=DEFAULT_ROOMS.length)
@@ -281,10 +263,10 @@ const SEm=['🌱','🌿','🌿','🌸','🌻','🌟'];
 const ST=['种子在土里','刚发芽了','小苗在长','花苞要开了','开得正好','结了种子✨'];
 
 let curRoom=null,myName=null,lastMsgId=0,chatOpen=false,cachedChars=[];
-let adjustMode=false; // 猫猫专属坐标调整模式
-const PWD='1225'; // 密码
+let adjustMode=false,adjTarget=null;
+const PWD='1225';
 
-// ── 注册 ──
+// 注册
 async function tryReg(name){name=name.trim();if(!name)return'请输入昵称。';if(name.length>12)return'昵称最多 12 个字。';await post('/visitors',{nickname:name});myName=name;localStorage.setItem('house_nickname',name);return null;}
 const ri=document.getElementById('reg-input');
 document.getElementById('reg-skip').onclick=()=>{myName=null;document.getElementById('reg-overlay').classList.add('done');};
@@ -298,7 +280,7 @@ function updateChatUI(){
   else{inp.disabled=true;document.getElementById('chat-send').disabled=true;inp.placeholder='登录后才能留言';nm.textContent='仅观看模式';}
 }
 
-// ── 进出 ──
+// 进出
 document.getElementById('btn-enter').onclick=async()=>{
   document.getElementById('scene-ext').classList.add('gone');
   document.getElementById('scene-int').classList.add('active');
@@ -309,16 +291,16 @@ document.getElementById('btn-enter').onclick=async()=>{
   updateChatUI();fetchAll();fetchMsgs(true);
 };
 document.getElementById('btn-exit').onclick=()=>{
+  if(adjustMode){exitAdjustMode();return;}
   document.getElementById('scene-ext').classList.remove('gone');
   document.getElementById('scene-int').classList.remove('active');
   if(myName)clearVisitor(myName);
 };
 
-// ── 面板 ──
 const panel=document.getElementById('side-panel'),tog=document.getElementById('panel-toggle');
 tog.onclick=()=>{const open=panel.classList.toggle('open');tog.textContent=open?'›':'☰';tog.style.right=open?'224px':'0';};
 
-// ── 访客位置 ──
+// 访客位置
 async function updateVisitorPos(nick,room){
   await upsert('/online_visitors',{nickname:nick,room,last_seen:new Date().toISOString()});
 }
@@ -326,72 +308,64 @@ async function clearVisitor(nick){
   try{await fetch(SB+'/online_visitors?nickname=eq.'+encodeURIComponent(nick),{method:'DELETE',headers:H});}catch{}
 }
 
-// ── 猫猫专属调整模式：点击标题5次触发 ──
+// 密码入口：封面标题连点 5 次
 let titleTaps=0,titleTimer=null;
 document.getElementById('ext-title').addEventListener('click',()=>{
   titleTaps++;
   clearTimeout(titleTimer);
-  titleTimer=setTimeout(()=>{titleTaps=0;},2000);
+  titleTimer=setTimeout(()=>{titleTaps=0;},2500);
   if(titleTaps>=5){
     titleTaps=0;
     document.getElementById('pwd-overlay').classList.add('open');
-    document.getElementById('pwd-input').focus();
+    setTimeout(()=>document.getElementById('pwd-input').focus(),100);
   }
 });
 document.getElementById('pwd-btn').onclick=()=>{
-  const v=document.getElementById('pwd-input').value;
-  if(v===PWD){
+  if(document.getElementById('pwd-input').value===PWD){
     document.getElementById('pwd-overlay').classList.remove('open');
     document.getElementById('pwd-input').value='';
     document.getElementById('pwd-err').textContent='';
-    enterAdjustMode();
+    // 先进小家再开启调整模式
+    document.getElementById('scene-ext').classList.add('gone');
+    document.getElementById('scene-int').classList.add('active');
+    const img=document.getElementById('int-img');
+    if(img.complete){syncOverlay();}else{img.onload=syncOverlay;}
+    loadCoords().then(()=>{
+      fetchAll();
+      adjustMode=true;
+      document.getElementById('adj-bar').classList.add('on');
+      updateAdjBar();
+      document.getElementById('int-overlay').style.pointerEvents='all';
+      showToast('✦ 坐标调整模式已开启，右侧面板选角色名');
+    });
   } else {
     document.getElementById('pwd-err').textContent='密码不对哦~';
   }
 };
 document.getElementById('pwd-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('pwd-btn').click();});
 
-function enterAdjustMode(){
-  adjustMode=true;
-  const bar=document.getElementById('adj-bar');
-  bar.classList.add('on');
-  updateAdjBar();
-  document.getElementById('int-overlay').style.pointerEvents='all';
-  document.getElementById('int-overlay').style.cursor='move';
-  showToast('✦ 坐标调整模式已开启');
-}
 function exitAdjustMode(){
-  adjustMode=false;
+  adjustMode=false;adjTarget=null;
   document.getElementById('adj-bar').classList.remove('on');
   document.getElementById('int-overlay').style.pointerEvents='none';
-  document.getElementById('int-overlay').style.cursor='';
-  showToast('✔ 坐标已保存！');
+  showToast('✔ 坐标已保存！返回正常模式');
 }
-let adjTarget=null;
-const CHAR_NAMES=['晏安','栗子','灰灰','来财','小八','乖乖'];
 function updateAdjBar(){
-  if(!adjustMode)return;
-  const bar=document.getElementById('adj-bar');
-  bar.textContent=adjTarget
-    ? '点击图上任意位置，将「'+adjTarget+'」移动过去  |  再次点击名字取消'
-    : '点击右侧面板上的角色名字选择要移动的角色  |  点击出门退出';
+  document.getElementById('adj-bar').textContent=adjTarget
+    ? '点击图上任意位置，将「'+adjTarget+'」移动过去（再次点名字取消）'
+    : '点击右侧面板中的角色名字选择要移动的角色  │  点击“出门”退出调整';
 }
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
-// ── 点击交互 ──
+// 点击交互
 function handleClick(e){
   const pct=screenToPct(e.clientX,e.clientY);
   const rpl=document.createElement('div');rpl.className='ripple';
   rpl.style.left=pct.x+'%';rpl.style.top=pct.y+'%';
   document.getElementById('int-overlay').appendChild(rpl);
   setTimeout(()=>rpl.remove(),700);
-
-  if(adjustMode&&adjTarget){
-    // 移动选中角色
-    moveCharOnMap(adjTarget,pct.x,pct.y);
-    return;
-  }
-  if(adjustMode)return; // 调整模式但未选角色，不弹房间
-
+  if(adjustMode&&adjTarget){moveCharOnMap(adjTarget,pct.x,pct.y);return;}
+  if(adjustMode)return;
   let best=null,bestDist=Infinity;
   rooms.forEach(r=>{const d=Math.hypot(r.x-pct.x,r.y-pct.y);if(d<bestDist){bestDist=d;best=r;}});
   if(best&&bestDist<22)openRoom(best.name);
@@ -411,32 +385,28 @@ document.getElementById('int-overlay').addEventListener('click',handleClick);
 document.getElementById('int-overlay').addEventListener('mousemove',handleMove);
 document.getElementById('int-overlay').addEventListener('mouseleave',()=>document.getElementById('hover-hint').classList.remove('show'));
 
-// 退出调整模式：点出门
-const origExit=document.getElementById('btn-exit').onclick;
-document.getElementById('btn-exit').addEventListener('click',()=>{
-  if(adjustMode){exitAdjustMode();return;}
-});
-
 async function moveCharOnMap(name,x,y){
-  // 更新 characters 表的 location（把 location 设为最近房间）
-  const nearest=rooms.reduce((a,b)=>Math.hypot(a.x-x,a.y-y)<Math.hypot(b.x-x,b.y-y)?a:b);
-  // 更新 room_coords 中角色对应的坐标——实际上角色坐标存在 characters 表里只有 location
-  // 这里我们用一个独立的 char_positions 表，如果没有就先用 Supabase upsert
   await upsert('/char_positions',{name,x,y});
-  adjTarget=null;
-  updateAdjBar();
+  adjTarget=null;updateAdjBar();
+  charPos[name]={x,y};
   if(cachedChars.length)renderChars(cachedChars);
-  showToast('「'+name+'」移动到新位置了');
+  showToast('「'+name+'」移动到新位置了！');
 }
 
-// 加载角色自定义坐标
 let charPos={};
 async function loadCharPos(){
   const data=await get('/char_positions?select=name,x,y');
+  charPos={};
   if(data)data.forEach(d=>{charPos[d.name]={x:parseFloat(d.x),y:parseFloat(d.y)};});
 }
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function bindAdjCharClick(){
+  document.querySelectorAll('.ci-name').forEach(el=>{
+    el.style.cursor='pointer';
+    el.style.color=adjTarget===el.textContent?'#f5c842':'var(--cream)';
+    el.onclick=()=>{adjTarget=adjTarget===el.textContent?null:el.textContent;bindAdjCharClick();updateAdjBar();};
+  });
+}
 
 async function openRoom(name){
   const[notes,who]=await Promise.all([
@@ -467,7 +437,6 @@ document.getElementById('card-btn').onclick=()=>{
   if(ac.log)visitorLog(ac.log[Math.floor(Math.random()*ac.log.length)]);
 };
 
-// ── 聊天 ──
 const chatBtn=document.getElementById('chat-btn'),chatPanel=document.getElementById('chat-panel'),chatMsgs=document.getElementById('chat-msgs'),chatInput=document.getElementById('chat-input'),chatSend=document.getElementById('chat-send'),chatBadge=document.getElementById('chat-badge');
 chatBtn.onclick=()=>{chatOpen=!chatOpen;chatPanel.classList.toggle('open',chatOpen);if(chatOpen){chatBadge.style.display='none';chatInput.focus();scrollMsgs();}};
 async function sendMsg(){const txt=chatInput.value.trim();if(!txt||!myName)return;chatInput.value='';if(await post('/messages',{author:myName,content:txt}))fetchMsgs(false);}
@@ -488,7 +457,6 @@ function scrollMsgs(){chatMsgs.scrollTop=chatMsgs.scrollHeight;}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 async function visitorLog(event){if(!myName)return;await post('/home_log',{event,actor:myName});}
 
-// ── 数据 ──
 async function fetchAll(){
   const d=document.getElementById('rdot');
   d.classList.add('pulse');setTimeout(()=>d.classList.remove('pulse'),600);
@@ -519,20 +487,7 @@ async function fetchAll(){
     const we=document.getElementById('card-who');
     if(who.length){we.textContent=who.map(c=>c.name+'（'+c.mood+'）').join('  ');we.style.display='block';}else{we.style.display='none';}
   }
-  // 调整模式时面板中角色名可点击
   if(adjustMode)bindAdjCharClick();
-}
-
-function bindAdjCharClick(){
-  document.querySelectorAll('.ci-name').forEach(el=>{
-    el.style.cursor='pointer';
-    el.style.color=adjTarget===el.textContent?'#f5c842':'var(--cream)';
-    el.onclick=()=>{
-      adjTarget=adjTarget===el.textContent?null:el.textContent;
-      bindAdjCharClick();
-      updateAdjBar();
-    };
-  });
 }
 
 function renderChars(chars,visitors=[]){
@@ -543,29 +498,22 @@ function renderChars(chars,visitors=[]){
   }).join('');
   const ol=document.getElementById('int-overlay');
   ol.querySelectorAll('.char-pin').forEach(el=>el.remove());
-
-  // 家庭成员（用自定义坐标或房间坐标）
   chars.forEach(c=>{
     const col=CC[c.name]||'#d4a055';
     let px,py;
-    if(charPos[c.name]){
-      px=charPos[c.name].x;py=charPos[c.name].y;
-    } else {
+    if(charPos[c.name]){px=charPos[c.name].x;py=charPos[c.name].y;}
+    else{
       const rp=rooms.find(r=>r.name===c.location)||{x:50,y:50};
       if(!RO[c.location])RO[c.location]=[];
-      const idx=RO[c.location].length;
-      RO[c.location].push(c.name);
+      const idx=RO[c.location].length;RO[c.location].push(c.name);
       const offs=[{x:0,y:0},{x:4,y:0},{x:-4,y:0},{x:0,y:6},{x:4,y:6}];
-      const o=offs[idx%offs.length];
-      px=rp.x+o.x;py=rp.y+o.y;
+      const o=offs[idx%offs.length];px=rp.x+o.x;py=rp.y+o.y;
     }
     const pin=document.createElement('div');pin.className='char-pin';
     pin.style.left=px+'%';pin.style.top=py+'%';
     pin.innerHTML='<div class="char-dot" style="background:'+col+'"></div><div class="char-label">'+c.name+'</div>';
     ol.appendChild(pin);
   });
-
-  // 访客（白色圆点）
   const vRO={};
   visitors.forEach(v=>{
     if(!v.nickname||!v.room)return;
