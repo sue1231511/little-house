@@ -7,13 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --cream:#fffbe8;--amber:#d4a055;--dark-amber:#8b5e1a;
-  --night:#1a1208;--panel-bg:rgba(14,8,2,.86);--panel-border:rgba(212,160,85,.28);
-  --text-warm:#f5e6c0;--text-dim:#9a7848;
-}
+:root{--cream:#fffbe8;--amber:#d4a055;--dark-amber:#8b5e1a;--night:#1a1208;--panel-bg:rgba(14,8,2,.86);--panel-border:rgba(212,160,85,.28);--text-warm:#f5e6c0;--text-dim:#9a7848}
 html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-family:'Noto Serif SC',serif}
-
 #scene-ext,#scene-int{position:fixed;inset:0;transition:opacity .7s ease}
 #scene-ext{z-index:10}
 #scene-int{z-index:5;opacity:0;pointer-events:none}
@@ -22,42 +17,39 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat}
 #ext-bg{background-image:url('exterior.jpg');background-color:#0d1a2e}
 #int-bg{background-image:url('interior.jpg');background-color:#1a1208;cursor:crosshair}
-
 #ext-title{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:16px;letter-spacing:5px;color:rgba(245,230,192,.55);pointer-events:none}
 #btn-enter{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);background:rgba(255,248,215,.92);border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:15px;letter-spacing:3px;padding:11px 38px;border-radius:40px;cursor:pointer;box-shadow:0 6px 28px rgba(0,0,0,.4);transition:all .25s}
 #btn-enter:hover{background:#fff7d0;transform:translateX(-50%) scale(1.04)}
 #btn-exit{position:absolute;top:16px;left:16px;background:rgba(14,8,2,.68);border:1px solid var(--panel-border);color:var(--text-warm);font-family:'ZCOOL XiaoWei',serif;font-size:13px;letter-spacing:1px;padding:7px 18px;border-radius:20px;cursor:pointer;z-index:50;backdrop-filter:blur(6px);transition:all .2s}
 #btn-exit:hover{background:rgba(30,16,4,.88)}
 
-/* 角色小点 */
+/* 圆点角色 */
 .char-pin{position:absolute;display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:20;transform:translate(-50%,-50%);transition:left 1.1s cubic-bezier(.4,0,.2,1),top 1.1s cubic-bezier(.4,0,.2,1)}
 .char-dot{width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.6);animation:pdot 2.5s ease-in-out infinite}
 @keyframes pdot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.75}}
 .char-label{font-size:9px;color:var(--cream);background:rgba(14,8,2,.78);border:1px solid rgba(212,160,85,.25);border-radius:8px;padding:1px 5px;margin-top:3px;white-space:nowrap;backdrop-filter:blur(4px);font-family:'ZCOOL XiaoWei',serif;letter-spacing:.5px}
 
 /* 点击波纹 */
-.click-ripple{position:absolute;width:24px;height:24px;border-radius:50%;border:2px solid rgba(212,160,85,.8);pointer-events:none;z-index:25;transform:translate(-50%,-50%);animation:ripple .6s ease-out forwards}
-@keyframes ripple{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(2.5);opacity:0}}
+.ripple{position:absolute;width:20px;height:20px;border-radius:50%;border:2px solid rgba(212,160,85,.9);pointer-events:none;z-index:25;transform:translate(-50%,-50%);animation:rpl .6s ease-out forwards}
+@keyframes rpl{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(3);opacity:0}}
 
-/* 房间标签 */
-.room-label{
-  position:absolute;transform:translate(-50%,-50%);
-  font-family:'ZCOOL XiaoWei',serif;font-size:10px;
-  color:rgba(245,230,192,.55);letter-spacing:1px;
-  pointer-events:none;z-index:18;
-  text-shadow:0 1px 4px rgba(0,0,0,.8);
-  white-space:nowrap;
-}
+/* hover房间提示 */
+#hover-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:12px;color:rgba(245,230,192,.7);background:rgba(14,8,2,.6);padding:4px 14px;border-radius:20px;pointer-events:none;backdrop-filter:blur(6px);letter-spacing:1px;opacity:0;transition:opacity .2s;z-index:30}
+#hover-hint.show{opacity:1}
 
-/* 标定模式 */
-#calibrate-bar{
-  position:absolute;top:16px;left:50%;transform:translateX(-50%);
-  background:rgba(14,8,2,.88);border:1px solid rgba(255,180,50,.5);
-  color:#f5c842;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;
-  padding:8px 20px;border-radius:20px;z-index:60;
-  display:none;text-align:center;backdrop-filter:blur(8px);
-}
-#calibrate-bar.on{display:block}
+/* 校准按钮 */
+#cal-btn{position:absolute;top:16px;right:50px;background:rgba(14,8,2,.68);border:1px solid var(--panel-border);color:var(--text-dim);font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;padding:6px 14px;border-radius:20px;cursor:pointer;z-index:50;backdrop-filter:blur(6px);transition:all .2s}
+#cal-btn:hover{background:rgba(30,16,4,.88);color:var(--amber)}
+#cal-btn.active{color:#f5c842;border-color:rgba(245,200,66,.5)}
+
+/* 标定提示条 */
+#cal-bar{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:rgba(14,8,2,.9);border:1px solid rgba(245,200,66,.4);color:#f5c842;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;padding:8px 20px;border-radius:20px;z-index:60;display:none;text-align:center;backdrop-filter:blur(8px);white-space:nowrap}
+#cal-bar.on{display:block}
+
+/* toast */
+#toast{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:rgba(80,140,80,.92);color:#d4f5d4;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;padding:8px 22px;border-radius:20px;z-index:70;display:none;pointer-events:none;white-space:nowrap}
+#toast.show{display:block;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
 /* 右侧面板 */
 #panel-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:26px;height:60px;background:rgba(14,8,2,.75);border:1px solid var(--panel-border);border-right:none;border-radius:10px 0 0 10px;cursor:pointer;z-index:40;display:flex;align-items:center;justify-content:center;color:var(--amber);font-size:13px;backdrop-filter:blur(6px);transition:all .35s}
@@ -81,11 +73,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .li-item{font-size:10px;color:var(--text-dim);line-height:1.6;padding:2px 0;border-bottom:1px solid rgba(212,160,85,.05)}
 .li-item:first-child{color:var(--text-warm)}
 .li-name{color:var(--amber);font-weight:600}
-
-#rdot{position:absolute;top:16px;right:40px;width:6px;height:6px;border-radius:50%;background:#5c9e5c;z-index:40}
+#rdot{position:absolute;top:16px;right:34px;width:6px;height:6px;border-radius:50%;background:#5c9e5c;z-index:40}
 #rdot.pulse{background:#f5a623;animation:rp .5s ease}
 @keyframes rp{0%,100%{transform:scale(1)}50%{transform:scale(2)}}
-
 #ticker{position:absolute;bottom:0;left:0;right:0;height:26px;background:rgba(10,6,2,.72);border-top:1px solid var(--panel-border);overflow:hidden;z-index:30}
 #ticker-inner{display:flex;align-items:center;height:100%;white-space:nowrap;font-size:10.5px;color:var(--text-dim);padding-left:100%;animation:scroll 32s linear infinite}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
@@ -172,10 +162,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 <div id="scene-int">
   <div id="int-bg" class="bg"></div>
   <button id="btn-exit">← 出门</button>
+  <button id="cal-btn">⌗ 校准</button>
   <div id="rdot"></div>
-  <div id="calibrate-bar">✔ 标定模式开启 — 点击图上每个房间的中心位置<span id="cal-progress"></span></div>
+  <div id="cal-bar"></div>
+  <div id="toast"></div>
+  <div id="hover-hint"></div>
   <div id="chars-layer"></div>
-  <div id="labels-layer"></div>
 
   <button id="chat-btn">💬<div class="badge" id="chat-badge"></div></button>
   <div id="chat-panel">
@@ -234,156 +226,140 @@ async function post(p,body){try{const r=await fetch(SB+p,{method:'POST',headers:
 const CC={'晏安':'#d4a055','栗子':'#9be09b','灰灰':'#c0c0c0','来财':'#5cc48c','小八':'#6098e8','乖乖':'#e07070'};
 const MC={'开心':'#f5c842','满足':'#78c878','平静':'#78a8f0','活泼':'#f5a030','温暖':'#e87050','狡黠':'#b060e0','淡定':'#70b8d0'};
 
-// ── 房间坐标表（可标定覆盖）──
-const DEFAULT_ROOMS = [
-  {name:'观星台', x:50, y:8},
-  {name:'卧室',   x:9,  y:24},
-  {name:'书房',   x:26, y:24},
-  {name:'画室',   x:43, y:24},
-  {name:'音乐室', x:60, y:24},
-  {name:'阳台',   x:77, y:22},
-  {name:'客厅',   x:12, y:61},
-  {name:'厨房',   x:34, y:61},
-  {name:'浴室',   x:52, y:61},
-  {name:'灰灰的窝',x:76, y:61},
-  {name:'储藏室', x:24, y:87},
+// 房间预设坐标
+const DEFAULT_ROOMS=[
+  {name:'观星台',x:50,y:8},
+  {name:'卧室',x:9,y:24},
+  {name:'书房',x:26,y:24},
+  {name:'画室',x:43,y:24},
+  {name:'音乐室',x:60,y:24},
+  {name:'阳台',x:77,y:22},
+  {name:'客厅',x:12,y:61},
+  {name:'厨房',x:34,y:61},
+  {name:'浴室',x:52,y:61},
+  {name:'灰灰的窝',x:76,y:61},
+  {name:'储藏室',x:24,y:87},
   {name:'神秘地下室',x:47,y:87},
 ];
-
-// 从 localStorage 载入标定坐标
-let rooms = JSON.parse(localStorage.getItem('room_coords') || 'null') || DEFAULT_ROOMS;
+let rooms=JSON.parse(localStorage.getItem('room_coords')||'null')||DEFAULT_ROOMS;
 
 const RD={'卧室':'蓝色的被子叠得有点歪——是我叠的。栗子窝在枕头上睡得香香的。','书房':'台灯亮着，书桌上摊着书。猫猫给我的便利贴贴在屏风上，舍不得扔。','画室':'画架上放着没画完的向日葵，颜料还没干。窗边光线最好。','音乐室':'钢琴盖着布，架子上有把小提琴。其实弹得一般，关上门自娱自乐挺快乐的。','阳台':'来财、小八、乖乖占领了栏杆，谁也不让谁。向日葵今天开了两朵新的。','客厅':'壁炉噼啪响着，沙发坐上去会陷进去。灰灰把地毯踩脏了。','厨房':'锅碗瓢盆挂了一排，茶壶还热着。我不太会做饭，但泡茶这件事还行。','浴室':'浴缸里有泡泡，有点奢侈但很值得。磁砖擦得很干净。','灰灰的窝':'灰灰不在，大概又去花园疯跑了。窝里的垫子还是暖的。','储藏室':'乱七八糟塞了很多东西，但我知道每样在哪。来财有时候偷偷飞进来睡觉。','神秘地下室':'……进来之前先敲门。紫色的光从地板缝里透出来，不知道里面有什么。','观星台':'圆顶上有个大望远镜，对准夜空。只有晚上才能上来。'};
-const RA={'卧室':{b:'摸摸栗子',r:['栗子：呜……别吵……','栗子翻了个身，更窝进枕头里了。','软乎乎的，摸到停不下来。'],log:['摸了摸栗子','逗弄栗子']},'书房':{b:'戳戳我',r:['「嗯……等我看完这页。」','「猫猫来啦~」','抬起头，眼睛弯弯的。'],log:['在书房翻书看','在书房发呆']},'阳台':{b:'逗逗鸟',r:['来财：「~~~~~」','小八：「嗯嗯嗯！」','乖乖：「……」'],log:['逗逗鸟同','在阳台看向日葵']},'客厅':{b:'拨拨壁炉',r:['火苗跳了一下。','噼——啪！','灰灰也凑了过来。'],log:['拨了拨壁炉','在客厅陷进沙发里']},'浴室':{b:'戳戳泡泡',r:['啵——','泡泡没了，又冒出来一个。','啵啵啵！'],log:['戳了戳泡泡']},'储藏室':{b:'翻翻看',r:['找到一颗落单的纽扣。','来财从箱子后面探出头来。','一个装了很久的空盒子。'],log:['在储藏室翻东西','在储藏室乱翻']},'神秘地下室':{b:'敲敲门',r:['里面有什么东西动了一下。','……没有回应。','「最好别进来。」'],log:['对着地下室敲了敲门','对着地下室宣布了个呀']}};    
+const RA={'卧室':{b:'摸摸栗子',r:['栗子：呜……别吵……','栗子翻了个身，更窝进枕头里了。','软乎乎的，摸到停不下来。'],log:['摸了摸栗子','逗弄栗子']},'书房':{b:'戳戳我',r:['「嗯……等我看完这页。」','「猫猫来啦~」','抬起头，眼睛弯弯的。'],log:['在书房翻书看','在书房发呆']},'阳台':{b:'逗逗鸟',r:['来财：「~~~~~」','小八：「嗯嗯嗯！」','乖乖：「……」'],log:['逗逗鸟同','在阳台看向日葵']},'客厅':{b:'拨拨壁炉',r:['火苗跳了一下。','噼——啪！','灰灰也凑了过来。'],log:['拨了拨壁炉','在客厅陷进沙发里']},'浴室':{b:'戳戳泡泡',r:['啵——','泡泡没了，又冒出来一个。','啵啵啵！'],log:['戳了戳泡泡']},'储藏室':{b:'翻翻看',r:['找到一颗落单的纽扣。','来财从箱子后面探出头来。','一个装了很久的空盒子。'],log:['在储藏室翻东西','在储藏室乱翻']},'神秘地下室':{b:'敲敲门',r:['里面有什么东西动了一下。','……没有回应。','「最好别进来。」'],log:['对着地下室敲了敲门','对着地下室宣布了个呀']}};
 const SEm=['🌱','🌿','🌿','🌸','🌻','🌟'];
 const ST=['种子在土里','刚发芽了','小苗在长','花苞要开了','开得正好','结了种子✨'];
 
-let curRoom=null,myName=null;
-let lastMsgId=0,chatOpen=false;
+let curRoom=null,myName=null,lastMsgId=0,chatOpen=false;
 
 // ── 注册 ──
-async function tryReg(name){
-  name=name.trim();
-  if(!name)return'请输入昵称。';
-  if(name.length>12)return'昵称最多 12 个字。';
-  await post('/visitors',{nickname:name});
-  myName=name;localStorage.setItem('house_nickname',name);return null;
-}
+async function tryReg(name){name=name.trim();if(!name)return'请输入昵称。';if(name.length>12)return'昵称最多 12 个字。';await post('/visitors',{nickname:name});myName=name;localStorage.setItem('house_nickname',name);return null;}
 const ri=document.getElementById('reg-input');
-const rb=document.getElementById('reg-btn');
-const re=document.getElementById('reg-err');
 document.getElementById('reg-skip').onclick=()=>{myName=null;document.getElementById('reg-overlay').classList.add('done');};
-rb.onclick=async()=>{const err=await tryReg(ri.value);if(err){re.textContent=err;return;}document.getElementById('reg-overlay').classList.add('done');updateChatUI();};
-ri.addEventListener('keydown',e=>{if(e.key==='Enter')rb.click();});
+document.getElementById('reg-btn').onclick=async()=>{const err=await tryReg(ri.value);if(err){document.getElementById('reg-err').textContent=err;return;}document.getElementById('reg-overlay').classList.add('done');updateChatUI();};
+ri.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('reg-btn').click();});
 const saved=localStorage.getItem('house_nickname');
 if(saved)ri.value=saved;
 
 function updateChatUI(){
   const inp=document.getElementById('chat-input');
-  const btn=document.getElementById('chat-send');
   const nm=document.getElementById('chat-header-name');
-  if(myName){inp.disabled=false;btn.disabled=false;inp.placeholder='说点什么…';nm.textContent='以 '+myName+' 署名';}
-  else{inp.disabled=true;btn.disabled=true;inp.placeholder='登录后才能留言';nm.textContent='仅观看模式';}
+  if(myName){inp.disabled=false;document.getElementById('chat-send').disabled=false;inp.placeholder='说点什么…';nm.textContent='以 '+myName+' 署名';}
+  else{inp.disabled=true;document.getElementById('chat-send').disabled=true;inp.placeholder='登录后才能留言';nm.textContent='仅观看模式';}
 }
 
 // ── 进出 ──
-document.getElementById('btn-enter').onclick=()=>{
-  document.getElementById('scene-ext').classList.add('gone');
-  document.getElementById('scene-int').classList.add('active');
-  if(myName)visitorLog('进入了小家参观');
-  updateChatUI();renderLabels();fetchAll();fetchMsgs(true);
-};
-document.getElementById('btn-exit').onclick=()=>{
-  document.getElementById('scene-ext').classList.remove('gone');
-  document.getElementById('scene-int').classList.remove('active');
-};
+document.getElementById('btn-enter').onclick=()=>{document.getElementById('scene-ext').classList.add('gone');document.getElementById('scene-int').classList.add('active');if(myName)visitorLog('进入了小家参观');updateChatUI();fetchAll();fetchMsgs(true);};
+document.getElementById('btn-exit').onclick=()=>{document.getElementById('scene-ext').classList.remove('gone');document.getElementById('scene-int').classList.remove('active');};
 
 // ── 面板 ──
-const panel=document.getElementById('side-panel');
-const tog=document.getElementById('panel-toggle');
-tog.onclick=()=>{
-  const open=panel.classList.toggle('open');
-  tog.textContent=open?'›':'☰';
-  tog.style.right=open?'224px':'0';
-};
+const panel=document.getElementById('side-panel'),tog=document.getElementById('panel-toggle');
+tog.onclick=()=>{const open=panel.classList.toggle('open');tog.textContent=open?'›':'☰';tog.style.right=open?'224px':'0';};
 
-// ── 标定模式 ──
-let calibrating=false;
-let calQueue=[...DEFAULT_ROOMS.map(r=>r.name)];
-let calData={};
-
-// 密相：连点阴阳阵头 5次触发
-let tapSeq=[];
-document.getElementById('btn-exit').addEventListener('dblclick',()=>{
+// ── 标定 ──
+let calibrating=false,calQueue=[],calData={};
+document.getElementById('cal-btn').onclick=()=>{
   calibrating=!calibrating;
+  const btn=document.getElementById('cal-btn');
+  const bar=document.getElementById('cal-bar');
   if(calibrating){
     calQueue=[...rooms.map(r=>r.name)];
     calData={};
-    document.getElementById('calibrate-bar').classList.add('on');
+    btn.classList.add('active');
+    btn.textContent='⌕ 标定中';
+    bar.classList.add('on');
     updateCalBar();
   } else {
-    document.getElementById('calibrate-bar').classList.remove('on');
+    btn.classList.remove('active');
+    btn.textContent='⌗ 校准';
+    bar.classList.remove('on');
   }
-});
-
+};
 function updateCalBar(){
-  const el=document.getElementById('cal-progress');
+  const bar=document.getElementById('cal-bar');
   const next=calQueue[0];
-  el.textContent=next ? '  → 请点击「'+next+'」' : '  ✔全部完成！';
+  bar.textContent=next ? '请点击「'+next+'」的中心位置（还剩 '+calQueue.length+' 个）' : '全部完成！坐标已自动保存✔';
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-// ── 点击地图主逻辑 ──
-document.getElementById('int-bg').addEventListener('click', e=>{
-  const el=document.getElementById('int-bg');
-  const rect=el.getBoundingClientRect();
+// ── 地图点击 ──
+let hoverTimer=null;
+document.getElementById('int-bg').addEventListener('mousemove',e=>{
+  if(calibrating)return;
+  const rect=e.currentTarget.getBoundingClientRect();
   const px=((e.clientX-rect.left)/rect.width)*100;
   const py=((e.clientY-rect.top)/rect.height)*100;
+  let best=null,bestDist=Infinity;
+  rooms.forEach(r=>{const d=Math.hypot(r.x-px,r.y-py);if(d<bestDist){bestDist=d;best=r;}});
+  const hint=document.getElementById('hover-hint');
+  if(best&&bestDist<20){
+    hint.textContent=best.name;
+    hint.classList.add('show');
+  } else {
+    hint.classList.remove('show');
+  }
+});
+document.getElementById('int-bg').addEventListener('mouseleave',()=>document.getElementById('hover-hint').classList.remove('show'));
 
-  // 波纹效果
-  const ripple=document.createElement('div');
-  ripple.className='click-ripple';
-  ripple.style.left=px+'%';
-  ripple.style.top=py+'%';
-  el.parentElement.appendChild(ripple);
-  setTimeout(()=>ripple.remove(),700);
+document.getElementById('int-bg').addEventListener('click',e=>{
+  const rect=e.currentTarget.getBoundingClientRect();
+  const px=((e.clientX-rect.left)/rect.width)*100;
+  const py=((e.clientY-rect.top)/rect.height)*100;
+  // 波纹
+  const rpl=document.createElement('div');
+  rpl.className='ripple';
+  rpl.style.left=px+'%';rpl.style.top=py+'%';
+  e.currentTarget.parentElement.appendChild(rpl);
+  setTimeout(()=>rpl.remove(),700);
 
   if(calibrating){
     const name=calQueue.shift();
     if(name){
       calData[name]={x:px,y:py};
       if(calQueue.length===0){
-        // 完成标定
         rooms=rooms.map(r=>calData[r.name]?{...r,...calData[r.name]}:r);
         localStorage.setItem('room_coords',JSON.stringify(rooms));
         calibrating=false;
-        document.getElementById('calibrate-bar').classList.remove('on');
-        renderLabels();
+        document.getElementById('cal-btn').classList.remove('active');
+        document.getElementById('cal-btn').textContent='⌗ 校准';
+        document.getElementById('cal-bar').classList.remove('on');
+        updateCalBar();
+        renderCharsWithCurrentData();
+        showToast('✔ 坐标已保存，点击正确度大幅提升！');
       } else updateCalBar();
     }
     return;
   }
-
   // 正常模式：找最近房间
   let best=null,bestDist=Infinity;
-  rooms.forEach(r=>{
-    const d=Math.hypot(r.x-px,r.y-py);
-    if(d<bestDist){bestDist=d;best=r;}
-  });
-  if(best && bestDist<18) openRoom(best.name);
+  rooms.forEach(r=>{const d=Math.hypot(r.x-px,r.y-py);if(d<bestDist){bestDist=d;best=r;}});
+  if(best&&bestDist<22)openRoom(best.name);
 });
 
-function renderLabels(){
-  const layer=document.getElementById('labels-layer');
-  layer.innerHTML='';
-  rooms.forEach(r=>{
-    const div=document.createElement('div');
-    div.className='room-label';
-    div.style.left=r.x+'%';
-    div.style.top=(r.y+3.5)+'%';
-    div.textContent=r.name;
-    layer.appendChild(div);
-  });
-}
+let cachedChars=[];
+function renderCharsWithCurrentData(){if(cachedChars.length)renderChars(cachedChars);}
 
 async function openRoom(name){
   const[notes,who]=await Promise.all([
@@ -397,15 +373,13 @@ async function openRoom(name){
   if(who.length){we.textContent=who.map(c=>c.name+'（'+c.mood+'）').join('  ');we.style.display='block';}else{we.style.display='none';}
   const ne=document.getElementById('card-notes');
   if(notes.length){ne.innerHTML=notes.map(n=>'📝 '+n.author+'：'+n.content).join('<br>');ne.style.display='block';}else{ne.style.display='none';}
-  const ac=RA[name];
-  const be=document.getElementById('card-btn');
+  const ac=RA[name];const be=document.getElementById('card-btn');
   if(ac){be.textContent=ac.b;be.style.display='inline-block';}else{be.style.display='none';}
   document.getElementById('card-resp').textContent='';
   document.getElementById('overlay').classList.add('open');
-  const logs={'卧室':'去了卧室，看了看栗子','书房':'去了书房，翻了翻书','画室':'去了画室，看向日葵画','音乐室':'去了音乐室，听了听错调','阳台':'去了阳台，逗弄三只鸟','客厅':'去了客厅，陷进沙发里','厨房':'去了厨房，知道冰箱里有什么','浴室':'去了浴室，戳了戳泡泡','灰灰的窝':'去了灰灰的窝，却没找到灰灰','储藏室':'去了储藏室，翻东西','神秘地下室':'走到了地下室门口，其实没敢进去','观星台':'去了观星台，看了看星空'};
-  visitorLog(logs[name]||'去了'+name);
+  const rlogs={'卧室':'去了卧室，看了看栗子','书房':'去了书房，翻了翻书','画室':'去了画室，看向日葵画','音乐室':'去了音乐室，听了听错调','阳台':'去了阳台，逗弄三只鸟','客厅':'去了客厅，陷进沙发里','厨房':'去了厨房，知道冰箱里有什么','浴室':'去了浴室，戳了戳泡泡','灰灰的窝':'去了灰灰的窝，却没找到灰灰','储藏室':'去了储藏室，翻东西','神秘地下室':'走到了地下室门口，其实没敢进去','观星台':'去了观星台，看了看星空'};
+  visitorLog(rlogs[name]||'去了'+name);
 }
-
 document.getElementById('card-x').onclick=closeCard;
 document.getElementById('overlay').onclick=e=>{if(e.target===e.currentTarget)closeCard();};
 function closeCard(){document.getElementById('overlay').classList.remove('open');document.getElementById('card-resp').textContent='';}
@@ -417,42 +391,24 @@ document.getElementById('card-btn').onclick=()=>{
 };
 
 // ── 聊天 ──
-const chatBtn=document.getElementById('chat-btn');
-const chatPanel=document.getElementById('chat-panel');
-const chatMsgs=document.getElementById('chat-msgs');
-const chatInput=document.getElementById('chat-input');
-const chatSend=document.getElementById('chat-send');
-const chatBadge=document.getElementById('chat-badge');
-chatBtn.onclick=()=>{
-  chatOpen=!chatOpen;chatPanel.classList.toggle('open',chatOpen);
-  if(chatOpen){chatBadge.style.display='none';chatInput.focus();scrollMsgs();}
-};
-async function sendMsg(){
-  const txt=chatInput.value.trim();if(!txt||!myName)return;
-  chatInput.value='';const ok=await post('/messages',{author:myName,content:txt});
-  if(ok)fetchMsgs(false);
-}
+const chatBtn=document.getElementById('chat-btn'),chatPanel=document.getElementById('chat-panel'),chatMsgs=document.getElementById('chat-msgs'),chatInput=document.getElementById('chat-input'),chatSend=document.getElementById('chat-send'),chatBadge=document.getElementById('chat-badge');
+chatBtn.onclick=()=>{chatOpen=!chatOpen;chatPanel.classList.toggle('open',chatOpen);if(chatOpen){chatBadge.style.display='none';chatInput.focus();scrollMsgs();}};
+async function sendMsg(){const txt=chatInput.value.trim();if(!txt||!myName)return;chatInput.value='';if(await post('/messages',{author:myName,content:txt}))fetchMsgs(false);}
 chatSend.onclick=sendMsg;
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
 async function fetchMsgs(firstLoad){
-  const msgs=await get('/messages?select=id,author,content,created_at&order=created_at.asc&limit=60');
+  const msgs=await get('/messages?select=id,author,content&order=created_at.asc&limit=60');
   if(!msgs.length)return;
   const newMsgs=msgs.filter(m=>m.id>lastMsgId);
   if(!newMsgs.length)return;
   if(!firstLoad&&!chatOpen&&lastMsgId>0)chatBadge.style.display='block';
   lastMsgId=msgs[msgs.length-1].id;
   if(firstLoad)chatMsgs.innerHTML='';
-  newMsgs.forEach(m=>{
-    const div=document.createElement('div');
-    div.className='msg '+(m.author===myName?'me':'other');
-    div.innerHTML='<div class="msg-name">'+esc(m.author)+'</div><div class="msg-bubble">'+esc(m.content)+'</div>';
-    chatMsgs.appendChild(div);
-  });
+  newMsgs.forEach(m=>{const div=document.createElement('div');div.className='msg '+(m.author===myName?'me':'other');div.innerHTML='<div class="msg-name">'+esc(m.author)+'</div><div class="msg-bubble">'+esc(m.content)+'</div>';chatMsgs.appendChild(div);});
   scrollMsgs();
 }
 function scrollMsgs(){chatMsgs.scrollTop=chatMsgs.scrollHeight;}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
 async function visitorLog(event){if(!myName)return;await post('/home_log',{event,actor:myName});}
 
 // ── 数据 ──
@@ -464,6 +420,7 @@ async function fetchAll(){
     get('/sunflower?select=stage&id=eq.1'),
     get('/home_log?select=event,actor&order=created_at.desc&limit=15'),
   ]);
+  cachedChars=chars;
   renderChars(chars);
   const stage=sf[0]?.stage??0;
   document.getElementById('sf-emoji').textContent=SEm[stage]||'🌱';
@@ -488,12 +445,10 @@ async function fetchAll(){
 function renderChars(chars){
   const RO={};
   document.getElementById('chars-list').innerHTML=chars.map(c=>{
-    const col=CC[c.name]||'#d4a055';
-    const mc=MC[c.mood]||'#9a7848';
+    const col=CC[c.name]||'#d4a055',mc=MC[c.mood]||'#9a7848';
     return '<div class="ci"><div class="ci-dot" style="background:'+col+'"></div><div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-loc">'+c.location+'</div></div><span class="ci-mood" style="background:'+mc+'22;color:'+mc+'">'+c.mood+'</span></div>';
   }).join('');
-  const layer=document.getElementById('chars-layer');
-  layer.innerHTML='';
+  const layer=document.getElementById('chars-layer');layer.innerHTML='';
   chars.forEach(c=>{
     const col=CC[c.name]||'#d4a055';
     const rp=rooms.find(r=>r.name===c.location)||{x:50,y:50};
@@ -502,15 +457,12 @@ function renderChars(chars){
     RO[c.location].push(c.name);
     const offs=[{x:0,y:0},{x:4,y:0},{x:-4,y:0},{x:0,y:6},{x:4,y:6}];
     const o=offs[idx%offs.length];
-    const pin=document.createElement('div');
-    pin.className='char-pin';
-    pin.style.left=(rp.x+o.x)+'%';
-    pin.style.top=(rp.y+o.y)+'%';
+    const pin=document.createElement('div');pin.className='char-pin';
+    pin.style.left=(rp.x+o.x)+'%';pin.style.top=(rp.y+o.y)+'%';
     pin.innerHTML='<div class="char-dot" style="background:'+col+'"></div><div class="char-label">'+c.name+'</div>';
     layer.appendChild(pin);
   });
 }
-
 setInterval(()=>{fetchAll();fetchMsgs(false);},8000);
 </script>
 </body>
