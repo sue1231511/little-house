@@ -11,29 +11,57 @@
 html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-family:'Noto Serif SC',serif}
 #scene-ext,#scene-int{position:fixed;inset:0;transition:opacity .7s ease}
 #scene-ext{z-index:10}
-#scene-int{z-index:5;opacity:0;pointer-events:none;display:flex;align-items:center;justify-content:center;background:var(--night)}
+#scene-int{z-index:5;opacity:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--night)}
 #scene-int.active{opacity:1;pointer-events:all}
 #scene-ext.gone{opacity:0;pointer-events:none}
-#ext-bg{position:absolute;inset:0;background-image:url('exterior.jpg');background-size:cover;background-position:center;background-repeat:no-repeat}
-#ext-title{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:16px;letter-spacing:5px;color:rgba(245,230,192,.55);pointer-events:none}
-#btn-enter{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);background:rgba(255,248,215,.92);border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:15px;letter-spacing:3px;padding:11px 38px;border-radius:40px;cursor:pointer;box-shadow:0 6px 28px rgba(0,0,0,.4);transition:all .25s}
+
+/* 封面：完整显示不裁剪 */
+#ext-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--night)}
+#ext-img{display:block;max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
+#ext-title{position:absolute;top:5%;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:16px;letter-spacing:5px;color:rgba(245,230,192,.65);pointer-events:none;white-space:nowrap}
+#btn-enter{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);background:rgba(255,248,215,.92);border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:15px;letter-spacing:3px;padding:11px 38px;border-radius:40px;cursor:pointer;box-shadow:0 6px 28px rgba(0,0,0,.4);transition:all .25s}
 #btn-enter:hover{background:#fff7d0;transform:translateX(-50%) scale(1.04)}
-#int-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
-#int-img{display:block;max-width:100%;max-height:100%;object-fit:contain;cursor:crosshair;user-select:none;-webkit-user-drag:none}
+
+/* 室内：图片+ticker组合居中 */
+#int-main{position:relative;display:flex;flex-direction:column;align-items:center;max-width:100%;max-height:100%}
+#int-img{display:block;max-width:100%;max-height:calc(100vh - 80px);object-fit:contain;cursor:crosshair;user-select:none;-webkit-user-drag:none}
 #int-overlay{position:absolute;pointer-events:none;z-index:10}
-#btn-exit{position:absolute;top:16px;left:16px;background:rgba(14,8,2,.68);border:1px solid var(--panel-border);color:var(--text-warm);font-family:'ZCOOL XiaoWei',serif;font-size:13px;letter-spacing:1px;padding:7px 18px;border-radius:20px;cursor:pointer;z-index:50;backdrop-filter:blur(6px);transition:all .2s}
+
+/* ticker 紧跟图片下方 */
+#ticker{width:100%;height:26px;background:rgba(10,6,2,.85);border-top:1px solid var(--panel-border);overflow:hidden;flex-shrink:0}
+#ticker-inner{display:flex;align-items:center;height:100%;white-space:nowrap;font-size:10.5px;color:var(--text-dim);padding-left:100%;animation:scroll 32s linear infinite}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+/* 顶部按钮区 */
+#btn-exit{position:absolute;top:14px;left:14px;background:rgba(14,8,2,.68);border:1px solid var(--panel-border);color:var(--text-warm);font-family:'ZCOOL XiaoWei',serif;font-size:13px;letter-spacing:1px;padding:7px 18px;border-radius:20px;cursor:pointer;z-index:50;backdrop-filter:blur(6px);transition:all .2s}
 #btn-exit:hover{background:rgba(30,16,4,.88)}
+
+/* 角色圆点 */
 .char-pin{position:absolute;display:flex;flex-direction:column;align-items:center;pointer-events:none;transform:translate(-50%,-50%);transition:left .9s cubic-bezier(.4,0,.2,1),top .9s cubic-bezier(.4,0,.2,1)}
 .char-dot{width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.6);animation:pdot 2.5s ease-in-out infinite}
+.char-dot.visitor{width:8px;height:8px;background:#ffffff;opacity:.85}
 @keyframes pdot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.75}}
 .char-label{font-size:9px;color:var(--cream);background:rgba(14,8,2,.78);border:1px solid rgba(212,160,85,.25);border-radius:8px;padding:1px 5px;margin-top:3px;white-space:nowrap;backdrop-filter:blur(4px);font-family:'ZCOOL XiaoWei',serif;letter-spacing:.5px}
+.char-label.visitor{border-color:rgba(255,255,255,.2);color:rgba(245,230,192,.8)}
+
+/* 点击波纹 */
 .ripple{position:absolute;width:20px;height:20px;border-radius:50%;border:2px solid rgba(212,160,85,.9);pointer-events:none;z-index:25;transform:translate(-50%,-50%);animation:rpl .6s ease-out forwards}
 @keyframes rpl{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(3);opacity:0}}
+
+/* hover提示 */
 #hover-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:'ZCOOL XiaoWei',serif;font-size:12px;color:rgba(245,230,192,.7);background:rgba(14,8,2,.6);padding:4px 14px;border-radius:20px;pointer-events:none;backdrop-filter:blur(6px);letter-spacing:1px;opacity:0;transition:opacity .2s;z-index:30}
 #hover-hint.show{opacity:1}
+
+/* toast */
 #toast{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:rgba(80,140,80,.92);color:#d4f5d4;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;padding:8px 22px;border-radius:20px;z-index:70;display:none;pointer-events:none;white-space:nowrap}
 #toast.show{display:block;animation:toastIn .3s ease}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* 坐标调整模式提示条 */
+#adj-bar{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:rgba(14,8,2,.9);border:1px solid rgba(245,200,66,.4);color:#f5c842;font-family:'ZCOOL XiaoWei',serif;font-size:12px;letter-spacing:1px;padding:8px 20px;border-radius:20px;z-index:60;display:none;text-align:center;backdrop-filter:blur(8px);white-space:nowrap;pointer-events:none}
+#adj-bar.on{display:block}
+
+/* 右侧面板 */
 #panel-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:26px;height:60px;background:rgba(14,8,2,.75);border:1px solid var(--panel-border);border-right:none;border-radius:10px 0 0 10px;cursor:pointer;z-index:40;display:flex;align-items:center;justify-content:center;color:var(--amber);font-size:13px;backdrop-filter:blur(6px);transition:all .35s}
 #panel-toggle:hover{background:rgba(30,16,4,.9)}
 #side-panel{position:absolute;right:0;top:0;bottom:0;width:224px;background:var(--panel-bg);border-left:1px solid var(--panel-border);backdrop-filter:blur(14px);z-index:35;display:flex;flex-direction:column;padding:15px 13px;gap:12px;overflow:hidden;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
@@ -55,16 +83,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .li-item{font-size:10px;color:var(--text-dim);line-height:1.6;padding:2px 0;border-bottom:1px solid rgba(212,160,85,.05)}
 .li-item:first-child{color:var(--text-warm)}
 .li-name{color:var(--amber);font-weight:600}
-#rdot{position:absolute;top:16px;right:34px;width:6px;height:6px;border-radius:50%;background:#5c9e5c;z-index:40}
+#rdot{position:absolute;top:14px;right:34px;width:6px;height:6px;border-radius:50%;background:#5c9e5c;z-index:40}
 #rdot.pulse{background:#f5a623;animation:rp .5s ease}
 @keyframes rp{0%,100%{transform:scale(1)}50%{transform:scale(2)}}
-#ticker{position:absolute;bottom:0;left:0;right:0;height:26px;background:rgba(10,6,2,.72);border-top:1px solid var(--panel-border);overflow:hidden;z-index:30}
-#ticker-inner{display:flex;align-items:center;height:100%;white-space:nowrap;font-size:10.5px;color:var(--text-dim);padding-left:100%;animation:scroll 32s linear infinite}
-@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+/* 聊天 */
 #chat-btn{position:absolute;left:18px;bottom:34px;width:40px;height:40px;border-radius:50%;background:rgba(14,8,2,.82);border:1.5px solid var(--panel-border);color:var(--amber);font-size:18px;cursor:pointer;z-index:40;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .25s;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 #chat-btn:hover{background:rgba(30,16,4,.9);transform:scale(1.08)}
 .badge{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#e05555;display:none}
-#chat-panel{position:absolute;left:18px;bottom:80px;width:280px;height:380px;background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:16px;backdrop-filter:blur(14px);z-index:40;display:flex;flex-direction:column;transform:scale(.92) translateY(12px);opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.34,1.2,.64,1);overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+#chat-panel{position:absolute;left:18px;bottom:80px;width:280px;height:360px;background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:16px;backdrop-filter:blur(14px);z-index:40;display:flex;flex-direction:column;transform:scale(.92) translateY(12px);opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.34,1.2,.64,1);overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.5)}
 #chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
 #chat-header{padding:10px 14px 8px;border-bottom:1px solid var(--panel-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 #chat-header-title{font-family:'ZCOOL XiaoWei',serif;font-size:13px;color:var(--amber);letter-spacing:2px}
@@ -90,6 +117,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 #chat-send{width:30px;height:30px;border-radius:50%;background:rgba(212,160,85,.25);border:1px solid rgba(212,160,85,.4);color:var(--amber);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 #chat-send:hover{background:rgba(212,160,85,.4)}
 #chat-send:disabled{opacity:.3;cursor:not-allowed}
+
+/* 房间卡片 */
 #overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(8,4,0,.52);backdrop-filter:blur(3px);align-items:center;justify-content:center}
 #overlay.open{display:flex}
 .card{background:linear-gradient(145deg,#fffbe8,#fff3cc);border:1.5px solid var(--amber);border-radius:18px;padding:24px 26px;max-width:350px;width:88%;position:relative;box-shadow:0 16px 48px rgba(0,0,0,.55);animation:pop .22s cubic-bezier(.34,1.4,.64,1)}
@@ -103,6 +132,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .card-btn{background:#ffd98a;border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:13px;letter-spacing:1px;padding:7px 20px;border-radius:20px;cursor:pointer;transition:all .2s}
 .card-btn:hover{background:#ffc85a;transform:scale(1.04)}
 .card-resp{margin-top:9px;font-size:12px;color:#7a4e18;min-height:16px;font-style:italic;line-height:1.7}
+
+/* 密码弹窗 */
+#pwd-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(8,4,0,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+#pwd-overlay.open{display:flex}
+.pwd-card{background:linear-gradient(145deg,#fffbe8,#fff3cc);border:1.5px solid var(--amber);border-radius:20px;padding:30px 28px;max-width:280px;width:86%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:pop .25s cubic-bezier(.34,1.4,.64,1)}
+.pwd-title{font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:#6b3e10;letter-spacing:2px;margin-bottom:16px}
+.pwd-input{width:100%;padding:9px 14px;border:1.5px solid var(--amber);border-radius:30px;background:rgba(255,248,215,.8);color:#6b3e10;font-family:'ZCOOL XiaoWei',serif;font-size:15px;letter-spacing:4px;text-align:center;outline:none;margin-bottom:12px}
+.pwd-btn{background:#ffd98a;border:1.5px solid var(--amber);color:var(--dark-amber);font-family:'ZCOOL XiaoWei',serif;font-size:13px;letter-spacing:2px;padding:8px 28px;border-radius:30px;cursor:pointer;transition:all .2s}
+.pwd-btn:hover{background:#ffc85a}
+.pwd-err{font-size:11px;color:#c05030;margin-top:8px;min-height:16px}
+
+/* 注册 */
 #reg-overlay{display:flex;position:fixed;inset:0;z-index:300;background:rgba(8,4,0,.72);backdrop-filter:blur(8px);align-items:center;justify-content:center}
 #reg-overlay.done{display:none}
 .reg-card{background:linear-gradient(145deg,#fffbe8,#fff3cc);border:1.5px solid var(--amber);border-radius:20px;padding:34px 32px;max-width:320px;width:88%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:pop .28s cubic-bezier(.34,1.4,.64,1)}
@@ -114,6 +155,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
 .reg-btn:hover{background:#ffc85a}
 .reg-err{font-size:11px;color:#c05030;margin-top:8px;min-height:16px}
 .reg-visitor{font-size:11px;color:#9a7040;margin-top:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* 手机适配 */
+@media(max-width:600px){
+  #side-panel{width:190px}
+  .sec-title{font-size:10px}
+  .ci-name{font-size:10px}
+  #chat-panel{width:240px;height:320px}
+  #ext-title{font-size:13px;letter-spacing:3px}
+  #btn-enter{font-size:13px;padding:10px 28px;letter-spacing:2px}
+}
 </style>
 </head>
 <body>
@@ -129,21 +180,36 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
   </div>
 </div>
 
+<div id="pwd-overlay">
+  <div class="pwd-card">
+    <div class="pwd-title">✦ 只有你能进来</div>
+    <input class="pwd-input" id="pwd-input" type="password" placeholder="••••" maxlength="8">
+    <button class="pwd-btn" id="pwd-btn">确认</button>
+    <div class="pwd-err" id="pwd-err"></div>
+  </div>
+</div>
+
 <div id="scene-ext">
-  <div id="ext-bg"></div>
-  <div id="ext-title">晏安的小家</div>
+  <div id="ext-wrap">
+    <img id="ext-img" src="exterior.jpg" draggable="false">
+  </div>
+  <div id="ext-title" id="ext-title-click">晏 安 的 小 家</div>
   <button id="btn-enter">✦ 进门逛逛 ✦</button>
 </div>
 
 <div id="scene-int">
-  <div id="int-wrap">
+  <div id="int-main">
     <img id="int-img" src="interior.jpg" draggable="false">
     <div id="int-overlay"></div>
+    <div id="ticker"><div id="ticker-inner">加载中…</div></div>
   </div>
+
   <button id="btn-exit">← 出门</button>
   <div id="rdot"></div>
   <div id="toast"></div>
+  <div id="adj-bar"></div>
   <div id="hover-hint"></div>
+
   <button id="chat-btn">💬<div class="badge" id="chat-badge"></div></button>
   <div id="chat-panel">
     <div id="chat-header"><span id="chat-header-title">小家留言板</span><span id="chat-header-name"></span></div>
@@ -153,6 +219,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
       <button id="chat-send">↳</button>
     </div>
   </div>
+
   <div id="side-panel">
     <div><div class="sec-title">✦ 晏安的小家</div><div id="time-disp">—</div></div>
     <div><div class="sec-title">📍 家里的人</div><div id="chars-list"><div class="li-item">加载中…</div></div></div>
@@ -160,7 +227,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
     <div style="flex:1;display:flex;flex-direction:column;min-height:0"><div class="sec-title">📜 最近发生的事</div><div id="log-list"><div class="li-item">…</div></div></div>
   </div>
   <button id="panel-toggle">☰</button>
-  <div id="ticker"><div id="ticker-inner">加载中…</div></div>
 </div>
 
 <div id="overlay">
@@ -181,6 +247,8 @@ const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6
 const H={apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'};
 async function get(p){try{const r=await fetch(SB+p,{headers:H});return r.ok?r.json():[]}catch{return[]}}
 async function post(p,body){try{const r=await fetch(SB+p,{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify(body)});return r.ok}catch{return false}}
+async function patch(p,body){try{const r=await fetch(SB+p,{method:'PATCH',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify(body)});return r.ok}catch{return false}}
+async function upsert(p,body){try{const r=await fetch(SB+p,{method:'POST',headers:{...H,Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(body)});return r.ok}catch{return false}}
 
 const CC={'晏安':'#d4a055','栗子':'#9be09b','灰灰':'#c0c0c0','来财':'#5cc48c','小八':'#6098e8','乖乖':'#e07070'};
 const MC={'开心':'#f5c842','满足':'#78c878','平静':'#78a8f0','活泼':'#f5a030','温暖':'#e87050','狡黠':'#b060e0','淡定':'#70b8d0'};
@@ -195,26 +263,17 @@ let rooms=[...DEFAULT_ROOMS];
 
 async function loadCoords(){
   const data=await get('/room_coords?select=name,x,y');
-  if(data&&data.length>=DEFAULT_ROOMS.length){
+  if(data&&data.length>=DEFAULT_ROOMS.length)
     rooms=DEFAULT_ROOMS.map(r=>{const sb=data.find(d=>d.name===r.name);return sb?{...r,x:parseFloat(sb.x),y:parseFloat(sb.y)}:r;});
-  }
 }
 
 function getImgRect(){return document.getElementById('int-img').getBoundingClientRect();}
-
 function syncOverlay(){
-  const r=getImgRect();
-  const ol=document.getElementById('int-overlay');
-  ol.style.left=r.left+'px';ol.style.top=r.top+'px';
-  ol.style.width=r.width+'px';ol.style.height=r.height+'px';
-  ol.style.position='fixed';
+  const r=getImgRect(),ol=document.getElementById('int-overlay');
+  ol.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;z-index:10;pointer-events:none`;
 }
 window.addEventListener('resize',()=>{syncOverlay();if(cachedChars.length)renderChars(cachedChars);});
-
-function screenToPct(sx,sy){
-  const r=getImgRect();
-  return{x:((sx-r.left)/r.width)*100,y:((sy-r.top)/r.height)*100};
-}
+function screenToPct(sx,sy){const r=getImgRect();return{x:((sx-r.left)/r.width)*100,y:((sy-r.top)/r.height)*100};}
 
 const RD={'卧室':'蓝色的被子叠得有点歪——是我叠的。栗子窝在枕头上睡得香香的。','书房':'台灯亮着，书桌上摊着书。猫猫给我的便利贴贴在屏风上，舍不得扔。','画室':'画架上放着没画完的向日葵，颜料还没干。窗边光线最好。','音乐室':'钢琴盖着布，架子上有把小提琴。其实弹得一般，关上门自娱自乐挺快乐的。','阳台':'来财、小八、乖乖占领了栏杆，谁也不让谁。向日葵今天开了两朵新的。','客厅':'壁炉噼啪响着，沙发坐上去会陷进去。灰灰把地毯踩脏了。','厨房':'锅碗瓢盆挂了一排，茶壶还热着。我不太会做饭，但泡茶这件事还行。','浴室':'浴缸里有泡泡，有点奢侈但很值得。磁砖擦得很干净。','灰灰的窝':'灰灰不在，大概又去花园疯跑了。窝里的垫子还是暖的。','储藏室':'乱七八糟塞了很多东西，但我知道每样在哪。来财有时候偷偷飞进来睡觉。','神秘地下室':'……进来之前先敲门。紫色的光从地板缝里透出来，不知道里面有什么。','观星台':'圆顶上有个大望远镜，对准夜空。只有晚上才能上来。'};
 const RA={'卧室':{b:'摸摸栗子',r:['栗子：呜……别吵……','栗子翻了个身，更窝进枕头里了。','软乎乎的，摸到停不下来。'],log:['摸了摸栗子']},'书房':{b:'戳戳我',r:['「嗯……等我看完这页。」','「猫猫来啦~」','抬起头，眼睛弯弯的。'],log:['在书房发呆']},'阳台':{b:'逗逗鸟',r:['来财：「~~~~~」','小八：「嗯嗯嗯！」','乖乖：「……」'],log:['逗逗鸟同']},'客厅':{b:'拨拨壁炉',r:['火苗跳了一下。','噼——啪！','灰灰也凑了过来。'],log:['在客厅陷进沙发里']},'浴室':{b:'戳戳泡泡',r:['啵——','泡泡没了，又冒出来一个。','啵啵啵！'],log:['戳了戳泡泡']},'储藏室':{b:'翻翻看',r:['找到一颗落单的纽扣。','来财从箱子后面探出头来。','一个装了很久的空盒子。'],log:['在储藏室翻东西']},'神秘地下室':{b:'敲敲门',r:['里面有什么东西动了一下。','……没有回应。','「最好别进来。」'],log:['对着地下室敲了敲门']}};
@@ -222,14 +281,16 @@ const SEm=['🌱','🌿','🌿','🌸','🌻','🌟'];
 const ST=['种子在土里','刚发芽了','小苗在长','花苞要开了','开得正好','结了种子✨'];
 
 let curRoom=null,myName=null,lastMsgId=0,chatOpen=false,cachedChars=[];
+let adjustMode=false; // 猫猫专属坐标调整模式
+const PWD='1225'; // 密码
 
+// ── 注册 ──
 async function tryReg(name){name=name.trim();if(!name)return'请输入昵称。';if(name.length>12)return'昵称最多 12 个字。';await post('/visitors',{nickname:name});myName=name;localStorage.setItem('house_nickname',name);return null;}
 const ri=document.getElementById('reg-input');
 document.getElementById('reg-skip').onclick=()=>{myName=null;document.getElementById('reg-overlay').classList.add('done');};
 document.getElementById('reg-btn').onclick=async()=>{const err=await tryReg(ri.value);if(err){document.getElementById('reg-err').textContent=err;return;}document.getElementById('reg-overlay').classList.add('done');updateChatUI();};
 ri.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('reg-btn').click();});
-const saved=localStorage.getItem('house_nickname');
-if(saved)ri.value=saved;
+const saved=localStorage.getItem('house_nickname');if(saved)ri.value=saved;
 
 function updateChatUI(){
   const inp=document.getElementById('chat-input'),nm=document.getElementById('chat-header-name');
@@ -237,47 +298,145 @@ function updateChatUI(){
   else{inp.disabled=true;document.getElementById('chat-send').disabled=true;inp.placeholder='登录后才能留言';nm.textContent='仅观看模式';}
 }
 
+// ── 进出 ──
 document.getElementById('btn-enter').onclick=async()=>{
   document.getElementById('scene-ext').classList.add('gone');
   document.getElementById('scene-int').classList.add('active');
   const img=document.getElementById('int-img');
   if(img.complete){syncOverlay();}else{img.onload=syncOverlay;}
   await loadCoords();
-  if(myName)visitorLog('进入了小家参观');
+  if(myName){visitorLog('进入了小家参观');updateVisitorPos(myName,'花园');}
   updateChatUI();fetchAll();fetchMsgs(true);
 };
-document.getElementById('btn-exit').onclick=()=>{document.getElementById('scene-ext').classList.remove('gone');document.getElementById('scene-int').classList.remove('active');};
+document.getElementById('btn-exit').onclick=()=>{
+  document.getElementById('scene-ext').classList.remove('gone');
+  document.getElementById('scene-int').classList.remove('active');
+  if(myName)clearVisitor(myName);
+};
 
+// ── 面板 ──
 const panel=document.getElementById('side-panel'),tog=document.getElementById('panel-toggle');
 tog.onclick=()=>{const open=panel.classList.toggle('open');tog.textContent=open?'›':'☰';tog.style.right=open?'224px':'0';};
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+// ── 访客位置 ──
+async function updateVisitorPos(nick,room){
+  await upsert('/online_visitors',{nickname:nick,room,last_seen:new Date().toISOString()});
+}
+async function clearVisitor(nick){
+  try{await fetch(SB+'/online_visitors?nickname=eq.'+encodeURIComponent(nick),{method:'DELETE',headers:H});}catch{}
+}
 
+// ── 猫猫专属调整模式：点击标题5次触发 ──
+let titleTaps=0,titleTimer=null;
+document.getElementById('ext-title').addEventListener('click',()=>{
+  titleTaps++;
+  clearTimeout(titleTimer);
+  titleTimer=setTimeout(()=>{titleTaps=0;},2000);
+  if(titleTaps>=5){
+    titleTaps=0;
+    document.getElementById('pwd-overlay').classList.add('open');
+    document.getElementById('pwd-input').focus();
+  }
+});
+document.getElementById('pwd-btn').onclick=()=>{
+  const v=document.getElementById('pwd-input').value;
+  if(v===PWD){
+    document.getElementById('pwd-overlay').classList.remove('open');
+    document.getElementById('pwd-input').value='';
+    document.getElementById('pwd-err').textContent='';
+    enterAdjustMode();
+  } else {
+    document.getElementById('pwd-err').textContent='密码不对哦~';
+  }
+};
+document.getElementById('pwd-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('pwd-btn').click();});
+
+function enterAdjustMode(){
+  adjustMode=true;
+  const bar=document.getElementById('adj-bar');
+  bar.classList.add('on');
+  updateAdjBar();
+  document.getElementById('int-overlay').style.pointerEvents='all';
+  document.getElementById('int-overlay').style.cursor='move';
+  showToast('✦ 坐标调整模式已开启');
+}
+function exitAdjustMode(){
+  adjustMode=false;
+  document.getElementById('adj-bar').classList.remove('on');
+  document.getElementById('int-overlay').style.pointerEvents='none';
+  document.getElementById('int-overlay').style.cursor='';
+  showToast('✔ 坐标已保存！');
+}
+let adjTarget=null;
+const CHAR_NAMES=['晏安','栗子','灰灰','来财','小八','乖乖'];
+function updateAdjBar(){
+  if(!adjustMode)return;
+  const bar=document.getElementById('adj-bar');
+  bar.textContent=adjTarget
+    ? '点击图上任意位置，将「'+adjTarget+'」移动过去  |  再次点击名字取消'
+    : '点击右侧面板上的角色名字选择要移动的角色  |  点击出门退出';
+}
+
+// ── 点击交互 ──
 function handleClick(e){
   const pct=screenToPct(e.clientX,e.clientY);
   const rpl=document.createElement('div');rpl.className='ripple';
   rpl.style.left=pct.x+'%';rpl.style.top=pct.y+'%';
   document.getElementById('int-overlay').appendChild(rpl);
   setTimeout(()=>rpl.remove(),700);
+
+  if(adjustMode&&adjTarget){
+    // 移动选中角色
+    moveCharOnMap(adjTarget,pct.x,pct.y);
+    return;
+  }
+  if(adjustMode)return; // 调整模式但未选角色，不弹房间
+
   let best=null,bestDist=Infinity;
   rooms.forEach(r=>{const d=Math.hypot(r.x-pct.x,r.y-pct.y);if(d<bestDist){bestDist=d;best=r;}});
   if(best&&bestDist<22)openRoom(best.name);
 }
-
 function handleMove(e){
+  if(adjustMode)return;
   const pct=screenToPct(e.clientX,e.clientY);
   let best=null,bestDist=Infinity;
   rooms.forEach(r=>{const d=Math.hypot(r.x-pct.x,r.y-pct.y);if(d<bestDist){bestDist=d;best=r;}});
   const hint=document.getElementById('hover-hint');
   if(best&&bestDist<20){hint.textContent=best.name;hint.classList.add('show');}else{hint.classList.remove('show');}
 }
-
 document.getElementById('int-img').addEventListener('click',handleClick);
 document.getElementById('int-img').addEventListener('mousemove',handleMove);
 document.getElementById('int-img').addEventListener('mouseleave',()=>document.getElementById('hover-hint').classList.remove('show'));
 document.getElementById('int-overlay').addEventListener('click',handleClick);
 document.getElementById('int-overlay').addEventListener('mousemove',handleMove);
 document.getElementById('int-overlay').addEventListener('mouseleave',()=>document.getElementById('hover-hint').classList.remove('show'));
+
+// 退出调整模式：点出门
+const origExit=document.getElementById('btn-exit').onclick;
+document.getElementById('btn-exit').addEventListener('click',()=>{
+  if(adjustMode){exitAdjustMode();return;}
+});
+
+async function moveCharOnMap(name,x,y){
+  // 更新 characters 表的 location（把 location 设为最近房间）
+  const nearest=rooms.reduce((a,b)=>Math.hypot(a.x-x,a.y-y)<Math.hypot(b.x-x,b.y-y)?a:b);
+  // 更新 room_coords 中角色对应的坐标——实际上角色坐标存在 characters 表里只有 location
+  // 这里我们用一个独立的 char_positions 表，如果没有就先用 Supabase upsert
+  await upsert('/char_positions',{name,x,y});
+  adjTarget=null;
+  updateAdjBar();
+  if(cachedChars.length)renderChars(cachedChars);
+  showToast('「'+name+'」移动到新位置了');
+}
+
+// 加载角色自定义坐标
+let charPos={};
+async function loadCharPos(){
+  const data=await get('/char_positions?select=name,x,y');
+  if(data)data.forEach(d=>{charPos[d.name]={x:parseFloat(d.x),y:parseFloat(d.y)};});
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
 async function openRoom(name){
   const[notes,who]=await Promise.all([
@@ -297,6 +456,7 @@ async function openRoom(name){
   document.getElementById('overlay').classList.add('open');
   const rl={'卧室':'去了卧室，看了看栗子','书房':'去了书房，翻了翻书','画室':'去了画室，看向日葵画','音乐室':'去了音乐室','阳台':'去了阳台，逗弄三只鸟','客厅':'去了客厅，陷进沙发里','厨房':'去了厨房','浴室':'去了浴室，戳了戳泡泡','灰灰的窝':'去了灰灰的窝','储藏室':'去了储藏室，翻东西','神秘地下室':'走到了地下室门口','观星台':'去了观星台，看了看星空'};
   visitorLog(rl[name]||'去了'+name);
+  if(myName)updateVisitorPos(myName,name);
 }
 document.getElementById('card-x').onclick=closeCard;
 document.getElementById('overlay').onclick=e=>{if(e.target===e.currentTarget)closeCard();};
@@ -307,6 +467,7 @@ document.getElementById('card-btn').onclick=()=>{
   if(ac.log)visitorLog(ac.log[Math.floor(Math.random()*ac.log.length)]);
 };
 
+// ── 聊天 ──
 const chatBtn=document.getElementById('chat-btn'),chatPanel=document.getElementById('chat-panel'),chatMsgs=document.getElementById('chat-msgs'),chatInput=document.getElementById('chat-input'),chatSend=document.getElementById('chat-send'),chatBadge=document.getElementById('chat-badge');
 chatBtn.onclick=()=>{chatOpen=!chatOpen;chatPanel.classList.toggle('open',chatOpen);if(chatOpen){chatBadge.style.display='none';chatInput.focus();scrollMsgs();}};
 async function sendMsg(){const txt=chatInput.value.trim();if(!txt||!myName)return;chatInput.value='';if(await post('/messages',{author:myName,content:txt}))fetchMsgs(false);}
@@ -327,15 +488,19 @@ function scrollMsgs(){chatMsgs.scrollTop=chatMsgs.scrollHeight;}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 async function visitorLog(event){if(!myName)return;await post('/home_log',{event,actor:myName});}
 
+// ── 数据 ──
 async function fetchAll(){
   const d=document.getElementById('rdot');
   d.classList.add('pulse');setTimeout(()=>d.classList.remove('pulse'),600);
-  const[chars,sf,logs]=await Promise.all([
+  const[chars,sf,logs,visitors]=await Promise.all([
     get('/characters?select=name,location,status,mood&order=name.asc'),
     get('/sunflower?select=stage&id=eq.1'),
     get('/home_log?select=event,actor&order=created_at.desc&limit=15'),
+    get("/online_visitors?select=nickname,room&last_seen=gt."+new Date(Date.now()-300000).toISOString()),
   ]);
-  cachedChars=chars;renderChars(chars);
+  await loadCharPos();
+  cachedChars=chars;
+  renderChars(chars,visitors||[]);
   const stage=sf[0]?.stage??0;
   document.getElementById('sf-emoji').textContent=SEm[stage]||'🌱';
   document.getElementById('sf-text').textContent=ST[stage]||'—';
@@ -343,7 +508,7 @@ async function fetchAll(){
   ll.innerHTML=logs.length?logs.map((l,i)=>{
     const isYA=l.actor==='晏安'||!l.actor;
     const ns=isYA?'<span class="li-name">晏安</span>':'<span class="li-name">'+l.actor+'</span>';
-    return '<div class="li-item" style="opacity:'+(1-i*.06)+'">'+ns+'　'+l.event+'</div>';
+    return '<div class="li-item" style="opacity:'+(1-i*.06)+'">' +ns+'　'+l.event+'</div>';
   }).join(''):'<div class="li-item">还没发生过什么事。</div>';
   const h=((new Date().getUTCHours()+8)%24+24)%24;
   document.getElementById('time-disp').textContent='现在是 '+(h<6?'夜晚':h<9?'清晨':h<12?'上午':h<14?'正午':h<18?'下午':h<21?'傍晚':'夜晚');
@@ -354,9 +519,23 @@ async function fetchAll(){
     const we=document.getElementById('card-who');
     if(who.length){we.textContent=who.map(c=>c.name+'（'+c.mood+'）').join('  ');we.style.display='block';}else{we.style.display='none';}
   }
+  // 调整模式时面板中角色名可点击
+  if(adjustMode)bindAdjCharClick();
 }
 
-function renderChars(chars){
+function bindAdjCharClick(){
+  document.querySelectorAll('.ci-name').forEach(el=>{
+    el.style.cursor='pointer';
+    el.style.color=adjTarget===el.textContent?'#f5c842':'var(--cream)';
+    el.onclick=()=>{
+      adjTarget=adjTarget===el.textContent?null:el.textContent;
+      bindAdjCharClick();
+      updateAdjBar();
+    };
+  });
+}
+
+function renderChars(chars,visitors=[]){
   const RO={};
   document.getElementById('chars-list').innerHTML=chars.map(c=>{
     const col=CC[c.name]||'#d4a055',mc=MC[c.mood]||'#9a7848';
@@ -364,18 +543,40 @@ function renderChars(chars){
   }).join('');
   const ol=document.getElementById('int-overlay');
   ol.querySelectorAll('.char-pin').forEach(el=>el.remove());
+
+  // 家庭成员（用自定义坐标或房间坐标）
   chars.forEach(c=>{
     const col=CC[c.name]||'#d4a055';
-    const rp=rooms.find(r=>r.name===c.location)||{x:50,y:50};
-    if(!RO[c.location])RO[c.location]=[];
-    const idx=RO[c.location].length;
-    RO[c.location].push(c.name);
-    const offs=[{x:0,y:0},{x:4,y:0},{x:-4,y:0},{x:0,y:6},{x:4,y:6}];
-    const o=offs[idx%offs.length];
+    let px,py;
+    if(charPos[c.name]){
+      px=charPos[c.name].x;py=charPos[c.name].y;
+    } else {
+      const rp=rooms.find(r=>r.name===c.location)||{x:50,y:50};
+      if(!RO[c.location])RO[c.location]=[];
+      const idx=RO[c.location].length;
+      RO[c.location].push(c.name);
+      const offs=[{x:0,y:0},{x:4,y:0},{x:-4,y:0},{x:0,y:6},{x:4,y:6}];
+      const o=offs[idx%offs.length];
+      px=rp.x+o.x;py=rp.y+o.y;
+    }
     const pin=document.createElement('div');pin.className='char-pin';
-    pin.style.left=(rp.x+o.x)+'%';pin.style.top=(rp.y+o.y)+'%';
+    pin.style.left=px+'%';pin.style.top=py+'%';
     pin.innerHTML='<div class="char-dot" style="background:'+col+'"></div><div class="char-label">'+c.name+'</div>';
     ol.appendChild(pin);
+  });
+
+  // 访客（白色圆点）
+  const vRO={};
+  visitors.forEach(v=>{
+    if(!v.nickname||!v.room)return;
+    const rp=rooms.find(r=>r.name===v.room)||{x:50,y:50};
+    if(!vRO[v.room])vRO[v.room]=0;
+    const off=[0,4,-4,0,4][vRO[v.room]%5];
+    const pin=document.createElement('div');pin.className='char-pin';
+    pin.style.left=(rp.x+off)+'%';pin.style.top=(rp.y+8+vRO[v.room]*5)+'%';
+    pin.innerHTML='<div class="char-dot visitor"></div><div class="char-label visitor">'+esc(v.nickname)+'</div>';
+    ol.appendChild(pin);
+    vRO[v.room]++;
   });
 }
 setInterval(()=>{fetchAll();fetchMsgs(false);},8000);
