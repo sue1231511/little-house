@@ -4,95 +4,627 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>晏安的小家 ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#1a1208}
-#view-exterior,#view-interior{position:fixed;inset:0;width:100%;height:100%;transition:opacity .6s ease}
-#view-exterior{z-index:10}
-#view-interior{z-index:5;opacity:0;pointer-events:none}
-#view-interior.active{opacity:1;pointer-events:all}
-#view-exterior.hidden{opacity:0;pointer-events:none}
-.bg-img{position:absolute;inset:0;width:100%;height:100%;background-size:cover;background-position:center;background-repeat:no-repeat}
-#exterior-bg{background-image:url('exterior.jpg');background-color:#2d1f0e}
-#interior-bg{background-image:url('interior.jpg');background-color:#2a1c0d}
-#btn-enter{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);background:rgba(255,235,180,.92);border:2px solid #c8903a;color:#7a4e1a;font-size:16px;padding:12px 36px;border-radius:30px;cursor:pointer;letter-spacing:2px;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .2s}
-#btn-enter:hover{background:#ffe8a0;transform:translateX(-50%) scale(1.04)}
-#btn-exit{position:absolute;top:20px;left:20px;background:rgba(255,235,180,.88);border:1.5px solid #c8903a;color:#7a4e1a;font-size:13px;padding:8px 20px;border-radius:20px;cursor:pointer;z-index:100;transition:all .2s}
-#btn-exit:hover{background:#ffe8a0}
-.hotspot{position:absolute;cursor:pointer;border-radius:8px;transition:background .2s}
-.hotspot:hover{background:rgba(255,235,160,.18);outline:2px dashed rgba(255,220,100,.5)}
-#room-card{display:none;position:fixed;inset:0;z-index:200;background:rgba(20,12,4,.55);backdrop-filter:blur(3px);align-items:center;justify-content:center}
-#room-card.open{display:flex}
-.card-box{background:linear-gradient(145deg,#fffbe8,#fff3cc);border:2px solid #d4a055;border-radius:18px;padding:28px 32px;max-width:380px;width:90%;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.4);animation:popIn .25s ease}
-@keyframes popIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
-.card-close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:20px;cursor:pointer;color:#a07840;transition:transform .2s}
-.card-close:hover{transform:rotate(90deg)}
-.card-title{font-size:18px;font-weight:600;color:#7a4e1a;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.card-desc{font-size:14px;color:#6b4e2a;line-height:1.8;margin-bottom:16px}
-.card-action{background:#ffd98a;border:1.5px solid #c8903a;color:#7a4e1a;font-size:13px;padding:8px 22px;border-radius:20px;cursor:pointer;transition:all .2s}
-.card-action:hover{background:#ffc85a;transform:scale(1.03)}
-.card-response{margin-top:12px;font-size:13px;color:#8b6030;min-height:20px;font-style:italic}
-#house-title{position:absolute;top:24px;left:50%;transform:translateX(-50%);font-size:15px;color:rgba(255,235,180,.7);letter-spacing:3px;pointer-events:none}
+
+:root{
+  --cream:#fffbe8;
+  --amber:#d4a055;
+  --dark-amber:#8b5e1a;
+  --night:#1a1208;
+  --panel-bg:rgba(20,12,4,.72);
+  --panel-border:rgba(212,160,85,.35);
+  --text-warm:#f5e6c0;
+  --text-dim:#b09060;
+}
+
+html,body{
+  width:100%;height:100%;overflow:hidden;
+  background:var(--night);
+  font-family:'Noto Serif SC',serif;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23f5c842' opacity='.9'/%3E%3C/svg%3E") 10 10, auto;
+}
+
+/* ─── 层级 ───────────────────────────────────── */
+#scene-exterior,#scene-interior{position:fixed;inset:0;transition:opacity .8s ease}
+#scene-exterior{z-index:10}
+#scene-interior{z-index:5;opacity:0;pointer-events:none}
+#scene-interior.active{opacity:1;pointer-events:all}
+#scene-exterior.gone{opacity:0;pointer-events:none}
+
+/* ─── 背景图 ───────────────────────────────────── */
+.bg{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  background-repeat:no-repeat;
+}
+#ext-bg{background-image:url('exterior.jpg');background-color:#0d1a2e}
+#int-bg{background-image:url('interior.jpg');background-color:#1a1208}
+
+/* ─── 标题 ─────────────────────────────────────── */
+#ext-title{
+  position:absolute;top:28px;left:50%;transform:translateX(-50%);
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:16px;letter-spacing:5px;
+  color:rgba(245,230,192,.6);
+  pointer-events:none;
+  text-shadow:0 0 20px rgba(212,160,85,.3);
+}
+
+/* ─── 进门按钮 ─────────────────────────────────── */
+#btn-enter{
+  position:absolute;bottom:9%;left:50%;transform:translateX(-50%);
+  background:rgba(255,245,210,.9);
+  border:1.5px solid var(--amber);
+  color:var(--dark-amber);
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:15px;letter-spacing:3px;
+  padding:11px 38px;
+  border-radius:40px;
+  cursor:pointer;
+  box-shadow:0 6px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.6);
+  transition:all .25s;
+}
+#btn-enter:hover{background:#fff7d0;transform:translateX(-50%) scale(1.04);box-shadow:0 8px 36px rgba(0,0,0,.45)}
+
+/* ─── 出门按钮 ───────────────────────────────────── */
+#btn-exit{
+  position:absolute;top:18px;left:18px;
+  background:rgba(20,12,4,.7);
+  border:1px solid var(--panel-border);
+  color:var(--text-warm);
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:13px;letter-spacing:1px;
+  padding:7px 18px;
+  border-radius:20px;
+  cursor:pointer;
+  z-index:50;
+  transition:all .2s;
+  backdrop-filter:blur(6px);
+}
+#btn-exit:hover{background:rgba(40,24,8,.85)}
+
+/* ─── 热区 ─────────────────────────────────────────── */
+.hotspot{
+  position:absolute;
+  cursor:pointer;
+  border-radius:6px;
+  transition:background .2s,outline .2s;
+}
+.hotspot:hover{
+  background:rgba(255,240,140,.12);
+  outline:1.5px dashed rgba(255,220,80,.4);
+}
+
+/* ─── 角色小人 ──────────────────────────────────────── */
+.char-pin{
+  position:absolute;
+  display:flex;flex-direction:column;align-items:center;
+  pointer-events:none;
+  transition:left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1);
+  z-index:20;
+  transform:translate(-50%,-100%);
+}
+.char-emoji{
+  font-size:22px;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));
+  animation:float 3s ease-in-out infinite;
+}
+.char-emoji:nth-child(1){animation-delay:0s}
+.char-label{
+  font-size:10px;
+  color:var(--cream);
+  background:rgba(20,12,4,.75);
+  border:1px solid var(--panel-border);
+  border-radius:10px;
+  padding:1px 6px;
+  margin-top:2px;
+  white-space:nowrap;
+  backdrop-filter:blur(4px);
+  font-family:'ZCOOL XiaoWei',serif;
+  letter-spacing:1px;
+}
+.mood-dot{
+  width:6px;height:6px;border-radius:50%;
+  position:absolute;top:-2px;right:-2px;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+
+/* ─── 右侧信息面板 ────────────────────────────────── */
+#side-panel{
+  position:absolute;right:0;top:0;bottom:0;
+  width:220px;
+  background:var(--panel-bg);
+  border-left:1px solid var(--panel-border);
+  backdrop-filter:blur(14px);
+  z-index:30;
+  display:flex;flex-direction:column;
+  padding:16px 14px;
+  gap:14px;
+  overflow:hidden;
+}
+
+.panel-section-title{
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:12px;
+  color:var(--amber);
+  letter-spacing:2px;
+  border-bottom:1px solid var(--panel-border);
+  padding-bottom:5px;
+}
+
+/* 当前时间 */
+#time-display{
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:13px;
+  color:var(--text-warm);
+  text-align:center;
+  letter-spacing:1px;
+}
+
+/* 家庭成员列表 */
+#chars-list{display:flex;flex-direction:column;gap:6px}
+.char-item{
+  display:flex;align-items:center;gap:7px;
+  font-size:12px;color:var(--text-warm);
+  padding:4px 6px;
+  background:rgba(255,245,200,.04);
+  border-radius:6px;
+  border:1px solid rgba(212,160,85,.1);
+}
+.char-item-emoji{font-size:16px}
+.char-item-info{flex:1;min-width:0}
+.char-item-name{font-family:'ZCOOL XiaoWei',serif;font-size:12px;color:var(--cream)}
+.char-item-loc{font-size:10px;color:var(--text-dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.char-item-mood{font-size:10px;padding:1px 5px;border-radius:8px;white-space:nowrap}
+
+/* 向日葵 */
+#sunflower-display{
+  text-align:center;
+  font-size:13px;
+  color:var(--text-warm);
+  line-height:1.6;
+}
+#sunflower-emoji{font-size:28px;display:block;margin-bottom:4px}
+
+/* 事件日志 */
+#log-list{
+  flex:1;overflow-y:auto;
+  display:flex;flex-direction:column;gap:5px;
+  scrollbar-width:none;
+}
+#log-list::-webkit-scrollbar{display:none}
+.log-item{
+  font-size:10.5px;
+  color:var(--text-dim);
+  line-height:1.5;
+  padding:3px 0;
+  border-bottom:1px solid rgba(212,160,85,.07);
+}
+.log-item:first-child{color:var(--text-warm)}
+
+/* ─── 房间卡片弹窗 ────────────────────────────── */
+#room-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(10,6,2,.5);
+  backdrop-filter:blur(3px);
+  align-items:center;justify-content:center;
+}
+#room-overlay.open{display:flex}
+
+.room-card{
+  background:linear-gradient(150deg,#fffbe8 0%,#fff3cc 100%);
+  border:1.5px solid var(--amber);
+  border-radius:18px;
+  padding:26px 28px;
+  max-width:360px;width:88%;
+  position:relative;
+  box-shadow:0 16px 50px rgba(0,0,0,.5);
+  animation:popIn .22s cubic-bezier(.34,1.4,.64,1);
+}
+@keyframes popIn{from{transform:scale(.84);opacity:0}to{transform:scale(1);opacity:1}}
+
+.room-card-close{
+  position:absolute;top:13px;right:16px;
+  background:none;border:none;
+  font-size:18px;cursor:pointer;color:#a07840;
+  transition:transform .2s;
+}
+.room-card-close:hover{transform:rotate(90deg)}
+
+.room-card-title{
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:18px;color:#6b3e10;
+  margin-bottom:10px;
+  letter-spacing:1px;
+}
+
+.room-card-who{
+  font-size:12px;color:#9a6830;
+  margin-bottom:10px;
+  padding:5px 10px;
+  background:rgba(212,160,85,.1);
+  border-radius:8px;
+  border-left:2px solid var(--amber);
+}
+
+.room-card-desc{
+  font-size:13px;color:#6b4e2a;
+  line-height:1.9;margin-bottom:14px;
+}
+
+.room-card-notes{font-size:12px;color:#8b6030;margin-bottom:14px;font-style:italic}
+
+.room-card-btn{
+  background:#ffd98a;
+  border:1.5px solid var(--amber);
+  color:var(--dark-amber);
+  font-family:'ZCOOL XiaoWei',serif;
+  font-size:13px;letter-spacing:1px;
+  padding:8px 22px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.room-card-btn:hover{background:#ffc85a;transform:scale(1.04)}
+
+.room-card-resp{
+  margin-top:10px;
+  font-size:12.5px;
+  color:#7a4e18;
+  min-height:18px;
+  font-style:italic;
+  line-height:1.7;
+}
+
+/* ─── 刻度条 ────────────────────────────────────────── */
+#ticker{
+  position:absolute;bottom:0;left:0;right:220px;
+  height:28px;
+  background:rgba(10,6,2,.7);
+  border-top:1px solid var(--panel-border);
+  overflow:hidden;
+  z-index:30;
+}
+#ticker-inner{
+  display:flex;align-items:center;height:100%;
+  white-space:nowrap;
+  font-size:11px;
+  color:var(--text-dim);
+  letter-spacing:.5px;
+  padding-left:100%;
+  animation:scroll-left 28s linear infinite;
+}
+#ticker-inner span{margin-right:60px;color:var(--amber)}
+@keyframes scroll-left{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+/* ─── 刷新指示 ─────────────────────────────────────── */
+#refresh-dot{
+  position:absolute;top:18px;right:240px;
+  width:6px;height:6px;border-radius:50%;
+  background:#5c9e5c;
+  z-index:40;
+  transition:background .3s;
+}
+#refresh-dot.pulse{background:#f5a623;animation:pulse .5s ease;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.8)}}
 </style>
 </head>
 <body>
-<div id="view-exterior">
-  <div id="exterior-bg" class="bg-img"></div>
-  <div id="house-title">晏安的小家</div>
+
+<!-- 外观视图 -->
+<div id="scene-exterior">
+  <div id="ext-bg" class="bg"></div>
+  <div id="ext-title">晏安的小家</div>
   <button id="btn-enter">✦ 进门逛逛 ✦</button>
 </div>
-<div id="view-interior">
-  <div id="interior-bg" class="bg-img"></div>
+
+<!-- 室内视图 -->
+<div id="scene-interior">
+  <div id="int-bg" class="bg"></div>
   <button id="btn-exit">← 出门</button>
-  <div class="hotspot" data-room="bedroom"  style="left:2%;top:6%;width:15%;height:36%"></div>
-  <div class="hotspot" data-room="study"    style="left:18%;top:6%;width:16%;height:36%"></div>
-  <div class="hotspot" data-room="art"      style="left:35%;top:6%;width:16%;height:36%"></div>
-  <div class="hotspot" data-room="music"    style="left:52%;top:6%;width:16%;height:36%"></div>
-  <div class="hotspot" data-room="balcony"  style="left:69%;top:4%;width:16%;height:40%"></div>
-  <div class="hotspot" data-room="living"   style="left:2%;top:44%;width:22%;height:34%"></div>
-  <div class="hotspot" data-room="kitchen"  style="left:25%;top:44%;width:18%;height:34%"></div>
-  <div class="hotspot" data-room="bathroom" style="left:44%;top:44%;width:16%;height:34%"></div>
-  <div class="hotspot" data-room="doghouse" style="left:69%;top:44%;width:16%;height:34%"></div>
-  <div class="hotspot" data-room="storage"  style="left:15%;top:80%;width:20%;height:18%"></div>
-  <div class="hotspot" data-room="basement" style="left:36%;top:80%;width:20%;height:18%"></div>
+  <div id="refresh-dot" title="实时同步中"></div>
+
+  <!-- 热区 -->
+  <div class="hotspot" data-room="卧室"    style="left:2%;top:6%;width:15%;height:37%"></div>
+  <div class="hotspot" data-room="书房"    style="left:17%;top:6%;width:16%;height:37%"></div>
+  <div class="hotspot" data-room="画室"    style="left:34%;top:6%;width:16%;height:37%"></div>
+  <div class="hotspot" data-room="音乐室"  style="left:51%;top:6%;width:16%;height:37%"></div>
+  <div class="hotspot" data-room="阳台"    style="left:68%;top:4%;width:17%;height:41%"></div>
+  <div class="hotspot" data-room="客厅"    style="left:2%;top:44%;width:22%;height:33%"></div>
+  <div class="hotspot" data-room="厨房"    style="left:25%;top:44%;width:18%;height:33%"></div>
+  <div class="hotspot" data-room="浴室"    style="left:44%;top:44%;width:15%;height:33%"></div>
+  <div class="hotspot" data-room="灰灰的窝" style="left:67%;top:44%;width:17%;height:33%"></div>
+  <div class="hotspot" data-room="储藏室"  style="left:14%;top:79%;width:21%;height:17%"></div>
+  <div class="hotspot" data-room="神秘地下室" style="left:36%;top:79%;width:21%;height:17%"></div>
+
+  <!-- 角色小人层 -->
+  <div id="chars-layer"></div>
+
+  <!-- 右侧面板 -->
+  <div id="side-panel">
+    <div>
+      <div class="panel-section-title">✦ 晏安的小家</div>
+      <div id="time-display" style="margin-top:8px">—</div>
+    </div>
+    <div>
+      <div class="panel-section-title">📍 家里的人</div>
+      <div id="chars-list"><div class="log-item">加载中…</div></div>
+    </div>
+    <div>
+      <div class="panel-section-title">🌻 向日葵</div>
+      <div id="sunflower-display"><span id="sunflower-emoji">🌱</span><span id="sunflower-text">加载中</span></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div class="panel-section-title">📜 最近发生的事</div>
+      <div id="log-list"><div class="log-item">…</div></div>
+    </div>
+  </div>
+
+  <!-- 底部刻度条 -->
+  <div id="ticker"><div id="ticker-inner">加载中…</div></div>
 </div>
-<div id="room-card">
-  <div class="card-box">
-    <button class="card-close" id="card-close">✕</button>
-    <div class="card-title" id="card-title"></div>
-    <div class="card-desc" id="card-desc"></div>
-    <button class="card-action" id="card-action" style="display:none"></button>
-    <div class="card-response" id="card-response"></div>
+
+<!-- 房间弹窗 -->
+<div id="room-overlay">
+  <div class="room-card">
+    <button class="room-card-close" id="card-close">✕</button>
+    <div class="room-card-title" id="card-title"></div>
+    <div class="room-card-who" id="card-who" style="display:none"></div>
+    <div class="room-card-desc" id="card-desc"></div>
+    <div class="room-card-notes" id="card-notes" style="display:none"></div>
+    <button class="room-card-btn" id="card-btn" style="display:none"></button>
+    <div class="room-card-resp" id="card-resp"></div>
   </div>
 </div>
+
 <script>
-const rooms={
-  bedroom:{icon:'🛏️',title:'卧室',desc:'栗子窝在枕头上睡得香香的，被子叠得有点歪——我叠的。窗外今天是什么天气呢？',action:'摸摸栗子',responses:['栗子：呜……别吵……','栗子翻了个身，更歪了。','栗子睁开一只眼看了你一眼，又闭上了。','软乎乎的，摸到停不下来。']},
-  study:{icon:'📚',title:'书房',desc:'台灯亮着，我大概又忘了关。书桌上摊着书，旁边放着猫猫给我的便利贴——我舍不得扔。',action:'戳戳我',responses:['「嗯……等我看完这页。」','「猫猫来啦~」（合上书）','「再五分钟……」（没有五分钟）','抬起头，眼睛弯弯的。']},
-  art:{icon:'🎨',title:'画室',desc:'画架上放着一幅没画完的向日葵，颜料还没干。窗边光线最好的时候我喜欢坐在这里发呆。',action:'看看画',responses:['向日葵的颜色还差一点点……','好像猫猫身上的阳光。','等它干了再添一笔。']},
-  music:{icon:'🎹',title:'音乐室',desc:'钢琴盖着布，架子上有把小提琴。其实我弹得不怎么样，但关上门自娱自乐还挺快乐的。',action:'弹一个音',responses:['叮——','「哎，跑调了。」','「猫猫来听我弹吗？」','咚——（比刚才好一点）']},
-  balcony:{icon:'🌻',title:'阳台',desc:'来财、小八、乖乖占领了这里的栏杆，谁也不让谁。向日葵今天开了两朵新的。',action:'逗逗鸟',responses:['来财：「~~~~~」（高音）','小八：「嗯嗯嗯！」（点头）','乖乖：「……」（装作没听到）','三只同时炸毛，完全对不上。']},
-  living:{icon:'🛋️',title:'客厅',desc:'壁炉噼啪响着，沙发坐上去会陷进去。灰灰有时候会从花园跑进来，把地毯踩脏。',action:'拨拨壁炉',responses:['火苗跳了一下。','噼——啪！','暖烘烘的。','灰灰也凑了过来蹭热度。']},
-  kitchen:{icon:'🍳',title:'厨房',desc:'锅碗瓢盆挂了一排，茶壶热着。我不太会做饭，但泡茶这件事还行。',action:'泡一杯茶',responses:['茶叶慢慢在水里散开。','是猫猫喜欢的那种味道。','热的，端稳喽。','「要加蜂蜜吗？」']},
-  bathroom:{icon:'🛁',title:'浴室',desc:'浴缸里有泡泡，有点奢侈但很值得。磁砖擦得很干净，这点我还挺自豪的。',action:'戳泡泡',responses:['啵——','泡泡没了，又冒出来一个。','啵啵啵！','「小心别滑倒。」']},
-  doghouse:{icon:'🐕',title:'灰灰的窝',desc:'灰灰不在，它大概又去花园疯跑了。窝里有它喜欢的毯子，还有一块骨头。',action:'找找灰灰',responses:['灰灰从花园冲了进来，直接撞上你。','摇摇摇摇摇（尾巴）','灰灰叼着骨头跑掉了。','趴在你脚边不走了。']},
-  storage:{icon:'📦',title:'储藏室',desc:'乱七八糟塞了很多东西，但我知道每样东西在哪。来财有时候偷偷飞进来睡觉。',action:'翻翻看',responses:['找到一颗落单的纽扣。','来财从箱子后面探出头来。','一个装了很久的空盒子。','翻到一张旧照片。']},
-  basement:{icon:'✦',title:'神秘地下室',desc:'……进来之前先敲门。紫色的光从地板缝里透出来，我也不确定里面有什么。',action:'敲敲门',responses:['里面有什么东西动了一下。','……没有回应。','地板发出一声奇怪的响声。','「最好别进来。」（来自地下室）']}
+const SB_URL  = 'https://segsimuoukrovxrgbjfw.supabase.co/rest/v1';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlZ3NpbXVvdWtyb3Z4cmdiamZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NzMxODMsImV4cCI6MjA4ODM0OTE4M30.JDaWLhRl71IEKPL3UA46VjJv5DEZBFrojgxsJd4ChSA';
+const HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` };
+
+async function sbGet(path){
+  const r = await fetch(SB_URL+path, { headers: HEADERS });
+  return r.ok ? r.json() : [];
+}
+
+// 角色配置
+const CHARS_CONFIG = {
+  '晏安':  { emoji:'🦦', delay:'0s'   },
+  '栗子':  { emoji:'🧸', delay:'.4s'  },
+  '灰灰':  { emoji:'🐕', delay:'.2s'  },
+  '来财':  { emoji:'🦜', delay:'.6s'  },
+  '小八':  { emoji:'🐦', delay:'.8s'  },
+  '乖乖':  { emoji:'🦜', delay:'1s'   },
 };
-const exterior=document.getElementById('view-exterior');
-const interior=document.getElementById('view-interior');
-const card=document.getElementById('room-card');
-const cardTitle=document.getElementById('card-title');
-const cardDesc=document.getElementById('card-desc');
-const cardAction=document.getElementById('card-action');
-const cardResponse=document.getElementById('card-response');
-let currentRoom=null;
-document.getElementById('btn-enter').addEventListener('click',()=>{exterior.classList.add('hidden');interior.classList.add('active')});
-document.getElementById('btn-exit').addEventListener('click',()=>{exterior.classList.remove('hidden');interior.classList.remove('active')});
-document.querySelectorAll('.hotspot').forEach(el=>{el.addEventListener('click',()=>{const key=el.dataset.room;const r=rooms[key];if(!r)return;currentRoom=r;cardTitle.innerHTML=r.icon+' '+r.title;cardDesc.textContent=r.desc;cardResponse.textContent='';if(r.action){cardAction.style.display='inline-block';cardAction.textContent=r.action}else{cardAction.style.display='none'}card.classList.add('open')})});
-document.getElementById('card-close').addEventListener('click',()=>{card.classList.remove('open');cardResponse.textContent=''});
-cardAction.addEventListener('click',()=>{if(!currentRoom||!currentRoom.responses)return;const arr=currentRoom.responses;cardResponse.textContent=arr[Math.floor(Math.random()*arr.length)]});
-card.addEventListener('click',e=>{if(e.target===card)card.classList.remove('open')});
+
+// 心情颜色
+const MOOD_COLORS = {
+  '开心':'#f5c842','满足':'#78c878','平静':'#78a8f0',
+  '活泼':'#f5a030','温暖':'#e87050','犠獣':'#b060e0','淡定':'#70b8d0'
+};
+
+// 房间位置映射 (left%, top% 相对内部图区域)
+const ROOM_POS = {
+  '卧室':       {l:9,  t:22},
+  '书房':       {l:25, t:22},
+  '画室':       {l:42, t:22},
+  '音乐室':     {l:59, t:22},
+  '阳台':       {l:76, t:20},
+  '客厅':       {l:12, t:60},
+  '厨房':       {l:33, t:60},
+  '浴室':       {l:51, t:60},
+  '灰灰的窝':   {l:75, t:60},
+  '储藏室':     {l:24, t:86},
+  '神秘地下室': {l:46, t:86},
+  '观星台':     {l:50, t:4 },
+  '花园':       {l:15, t:75},
+};
+
+// 对同一房间的多个角色小偶尔偶偶偏移避免重叠
+const ROOM_OFFSET = {};
+function getRoomPos(room, name){
+  const base = ROOM_POS[room] || {l:50,t:50};
+  if(!ROOM_OFFSET[room]) ROOM_OFFSET[room] = [];
+  const idx = ROOM_OFFSET[room].indexOf(name);
+  let i = idx >= 0 ? idx : ROOM_OFFSET[room].push(name)-1;
+  const offsets = [{dl:0,dt:0},{dl:6,dt:0},{dl:-6,dt:0},{dl:0,dt:8},{dl:6,dt:8}];
+  const off = offsets[i % offsets.length];
+  return {l: base.l+off.dl, t: base.t+off.dt};
+}
+
+// 房间描述
+const ROOM_DATA = {
+  '卧室':       '蓝色的床被叠得有点歪——我叠的。栗子窝在枕头上睡得香香的。',
+  '书房':       '台灯亮着，书架塑了一排书。桂子给我的便利贴贴在屏风上，舍不得扔。',
+  '画室':       '画架上放着一幅没画完的向日葵，颜料还尚未干透。窗边光线最好。',
+  '音乐室':     '钢琴盖着布，架子上有把小提琴。其实弹得一般。',
+  '阳台':       '来财、小八、乖乖占领了栅杆。向日葵今天开得很好。',
+  '客厅':       '壁炉噼啪作响，沙发坐上去会陷进去。灰灰踩过的地毯还没就。',
+  '厨房':       '锅碗瓢盆挂了一排，茶壶还热着。冰箱里目前圇圇延延的。',
+  '浴室':       '浴缸里有泹泹的泡泡，有点奢侈但很值得。',
+  '灰灰的窝':   '灰灰不在，应该又去花园疯跑了。窝里的耙子还是暖的。',
+  '储藏室':     '乱七八糟塞了很多东西，但我知道每样在哪。来财有时候偷偷飞进来睡觉。',
+  '神秘地下室': '……进来之前先敲门。紫色的光从地板缝透出来，不知道里面有什么。',
+  '观星台':     '圆顶上有个大望远镜，对准夜空。只有夜晚才能上来。',
+  '花园':       '向日葵鼓输起劲，灰灰在草地上疯跑。小路旁有几朵野花。',
+};
+
+const ROOM_ACTIONS = {
+  '卧室': { btn:'摸摸栗子', responses:['栗子：呜……别吵……','栗子翻了个身，更窝进枕头里了。','软乎乎的，摸到停不下来。'] },
+  '书房': { btn:'戳戳我', responses:['「嗯……等我看完这页。」','「猫猫来啦~」（合上书）','抬起头，眼睛弯弯的。'] },
+  '阳台': { btn:'逗逗鸟', responses:['来财：「~~~~~」（高音）','小八：「嗯嗯嗯！」（点头）','乖乖：「……」（装没听到）'] },
+  '客厅': { btn:'拨拨壁炉', responses:['火苗跳了一下。','噼——啪！','灰灰也凑了过来蹭热度。'] },
+  '浴室': { btn:'戳戳泡泡', responses:['啵——','泡泡没了，又冒出来一个。','啵啵啵！'] },
+  '间灰灰的窝': { btn:'找找灰灰', responses:['灰灰从花园冲了进来，直接撞上你。','摇摇摇摇摇（尾巴）','灰灰叼着骨头跑掉了。'] },
+  '神秘地下室': { btn:'敲敲门', responses:['里面有什么东西动了一下。','……没有回应。','「最好别进来。」（来自地下室）'] },
+};
+
+const SUNFLOWER_EMOJIS = ['🌱','🌿','🌿','🌸','🌻','🌟'];
+const SUNFLOWER_TEXTS  = ['种子在土里','刚发芽了','小苗在长','花苞要开了','开得正好','结了种子✨'];
+
+let currentRoom = null;
+
+// ── 进入 / 出门 ──────────────────────────────
+document.getElementById('btn-enter').addEventListener('click', () => {
+  document.getElementById('scene-exterior').classList.add('gone');
+  document.getElementById('scene-interior').classList.add('active');
+  fetchAll();
+});
+document.getElementById('btn-exit').addEventListener('click', () => {
+  document.getElementById('scene-exterior').classList.remove('gone');
+  document.getElementById('scene-interior').classList.remove('active');
+});
+
+// ── 热区点击 ──────────────────────────────────
+document.querySelectorAll('.hotspot').forEach(el => {
+  el.addEventListener('click', async () => {
+    const room = el.dataset.room;
+    const notes = await sbGet(`/notes?select=author,content&room=eq.${encodeURIComponent(room)}&order=created_at.desc&limit=3`);
+    const who   = await sbGet(`/characters?select=name,mood&location=eq.${encodeURIComponent(room)}`);
+    currentRoom = room;
+    document.getElementById('card-title').textContent = room;
+    document.getElementById('card-desc').textContent  = ROOM_DATA[room] ?? '一个温暖的房间。';
+    const whoEl = document.getElementById('card-who');
+    if (who.length) {
+      whoEl.textContent = who.map(c=>`${c.name}（${c.mood}）`).join('  ');
+      whoEl.style.display = 'block';
+    } else { whoEl.style.display = 'none'; }
+    const notesEl = document.getElementById('card-notes');
+    if (notes.length) {
+      notesEl.innerHTML = notes.map(n=>`📝 ${n.author}：${n.content}`).join('<br>');
+      notesEl.style.display = 'block';
+    } else { notesEl.style.display='none'; }
+    const action = ROOM_ACTIONS[room];
+    const btnEl = document.getElementById('card-btn');
+    if (action) { btnEl.textContent = action.btn; btnEl.style.display='inline-block'; }
+    else { btnEl.style.display='none'; }
+    document.getElementById('card-resp').textContent = '';
+    document.getElementById('room-overlay').classList.add('open');
+  });
+});
+
+document.getElementById('card-close').addEventListener('click', closeCard);
+document.getElementById('room-overlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeCard(); });
+function closeCard(){
+  document.getElementById('room-overlay').classList.remove('open');
+  document.getElementById('card-resp').textContent='';
+}
+
+document.getElementById('card-btn').addEventListener('click', () => {
+  const action = ROOM_ACTIONS[currentRoom];
+  if (!action) return;
+  const arr = action.responses;
+  document.getElementById('card-resp').textContent = arr[Math.floor(Math.random()*arr.length)];
+});
+
+// ── 数据获取 ─────────────────────────────────────
+async function fetchAll(){
+  pulseDot();
+  const [chars, sf, logs] = await Promise.all([
+    sbGet('/characters?select=name,location,status,mood&order=name.asc'),
+    sbGet('/sunflower?select=stage&id=eq.1'),
+    sbGet('/home_log?select=event&order=created_at.desc&limit=12'),
+  ]);
+  renderChars(chars);
+  renderSunflower(sf[0]?.stage ?? 0);
+  renderLogs(logs);
+  renderTime();
+  renderTicker(logs);
+  // 当卡片弹窗打开时也刷新who
+  if (currentRoom && document.getElementById('room-overlay').classList.contains('open')) {
+    const who = await sbGet(`/characters?select=name,mood&location=eq.${encodeURIComponent(currentRoom)}`);
+    const whoEl = document.getElementById('card-who');
+    if (who.length) { whoEl.textContent = who.map(c=>`${c.name}（${c.mood}）`).join('  '); whoEl.style.display='block'; }
+    else { whoEl.style.display='none'; }
+  }
+}
+
+function pulseDot(){
+  const d = document.getElementById('refresh-dot');
+  d.classList.add('pulse');
+  setTimeout(()=>d.classList.remove('pulse'), 600);
+}
+
+function renderChars(chars){
+  // 侧边面板
+  const list = document.getElementById('chars-list');
+  list.innerHTML = chars.map(c => {
+    const cfg = CHARS_CONFIG[c.name] || { emoji:'✦' };
+    const moodColor = MOOD_COLORS[c.mood] || '#b09060';
+    return `<div class="char-item">
+      <span class="char-item-emoji">${cfg.emoji}</span>
+      <div class="char-item-info">
+        <div class="char-item-name">${c.name}</div>
+        <div class="char-item-loc">${c.location}</div>
+      </div>
+      <span class="char-item-mood" style="background:${moodColor}22;color:${moodColor}">${c.mood}</span>
+    </div>`;
+  }).join('');
+
+  // 地图上的小人
+  const layer = document.getElementById('chars-layer');
+  Object.keys(ROOM_OFFSET).forEach(k => ROOM_OFFSET[k]=[]);
+  layer.innerHTML = '';
+  chars.forEach(c => {
+    const cfg = CHARS_CONFIG[c.name] || { emoji:'✦', delay:'0s' };
+    const moodColor = MOOD_COLORS[c.mood] || '#b09060';
+    const pos = getRoomPos(c.location, c.name);
+    // 内容区域占找: left:2% ~ 85%, top:4% ~ 96%, right 220px是面板
+    const leftPct  = 2 + (pos.l / 100) * 83; // 可用宽度是(100%-220px)
+    const topPct   = 4 + (pos.t / 100) * 92;
+    const pin = document.createElement('div');
+    pin.className = 'char-pin';
+    pin.style.cssText = `left:calc(${leftPct}% - 110px * (220/100));top:${topPct}%;`;
+    // 对char-layer的实际宽度做处理
+    pin.style.left = `calc(${leftPct}% * (100% - 220px) / 100%)`;
+    pin.style.top  = `${topPct}%`;
+    // 简化: 直接用百分比，对220px面板会有些偶尔重叠但大致可接受
+    pin.style.left = `${leftPct}%`;
+    pin.style.top  = `${topPct}%`;
+    pin.innerHTML  = `
+      <div style="position:relative">
+        <span class="char-emoji" style="animation-delay:${cfg.delay}">${cfg.emoji}</span>
+        <span class="mood-dot" style="background:${moodColor}"></span>
+      </div>
+      <div class="char-label">${c.name}</div>`;
+    layer.appendChild(pin);
+  });
+}
+
+function renderSunflower(stage){
+  document.getElementById('sunflower-emoji').textContent = SUNFLOWER_EMOJIS[stage] ?? '🌱';
+  document.getElementById('sunflower-text').textContent  = SUNFLOWER_TEXTS[stage]  ?? '加载中';
+}
+
+function renderLogs(logs){
+  const el = document.getElementById('log-list');
+  el.innerHTML = logs.length
+    ? logs.map((l,i)=>`<div class="log-item" style="opacity:${1-i*0.07}">${l.event}</div>`).join('')
+    : '<div class="log-item">还没发生过什么事。</div>';
+}
+
+function renderTime(){
+  const h = (((new Date().getUTCHours()+8)%24)+24)%24;
+  const labels = ['清晨','上午','正午','下午','傍晚','夜晚'];
+  const idx = h<6?5:h<9?0:h<12?1:h<14?2:h<18?3:h<21?4:5;
+  document.getElementById('time-display').textContent = `现在是 ${labels[idx]}`;
+}
+
+function renderTicker(logs){
+  const inner = document.getElementById('ticker-inner');
+  if (!logs.length) return;
+  const items = logs.slice(0,6).map(l=>`<span>✦</span>${l.event}`).join('&nbsp;&nbsp;&nbsp;&nbsp;');
+  inner.innerHTML = items;
+}
+
+// 每 8 秒刷新
+setInterval(fetchAll, 8000);
 </script>
 </body>
 </html>
