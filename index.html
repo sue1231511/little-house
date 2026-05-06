@@ -512,6 +512,8 @@ async function openRoom(name){
   if(myName)updateVisitorPos(myName,name);
 }
 document.getElementById('card-x').onclick=closeCard;
+document.getElementById('overlay').onclick=e=>{if(e.target===e.currentTarget)closeCard();};
+function closeCard(){document.getElementById('overlay').classList.remove('open');document.getElementById('card-resp').textContent='';}
 
 const chatBtn=document.getElementById('chat-btn'),chatPanel=document.getElementById('chat-panel'),chatMsgs=document.getElementById('chat-msgs'),chatInput=document.getElementById('chat-input'),chatSend=document.getElementById('chat-send'),chatBadge=document.getElementById('chat-badge');
 chatBtn.onclick=()=>{chatOpen=!chatOpen;chatPanel.classList.toggle('open',chatOpen);if(chatOpen){chatBadge.style.display='none';chatInput.focus();scrollMsgs();}};
