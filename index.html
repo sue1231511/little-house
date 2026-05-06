@@ -298,13 +298,14 @@ const ROOM_ACTIONS={
     {b:'拨拨壁炉',r:['火苗跳了一下。','噼——啪！','灰灰也凑了过来蹭热度。'],log:'在客厅拨了拨壁炉'},
     {b:'窝进沙发',r:['陷下去了，很难起来。','毯子盖上去，刚刚好。','灰灰跳上来了，踩来踩去。'],log:'在客厅陷进沙发里'},
     {b:'泡杯茶',r:['茶叶慢慢在水里散开。','是猫猫喜欢的那种味道。','热的，端稳喽。'],log:'在客厅泡了杯茶'},
-    {b:'看看相框',fn:async()=>{const p=await get('/notes?select=author,content&room=eq.客厅&order=created_at.desc&limit=3');return p.length?'📷 '+p.map(x=>x.author+'：'+x.content).join('\n📷 '):'相框里还没有放什么。'},log:'看了看客厅的相框'},
+    {b:'看相框',fn:async()=>{const p=await get('/notes?select=author,content&room=eq.客厅&order=created_at.desc&limit=5');return p.length?p.map(x=>'📷 '+x.author+'：'+x.content).join('\n'):'相框里还没有放什么。'},log:'看了看客厅的相框'},
+    {b:'放张照片',input:true,placeholder:'描述这张照片…',fn:async(val)=>{await fetch(SB+'/notes',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({room:'客厅',author:myName||'访客',content:val})});return '照片放进相框了，下次进客厅能看到~';},log:'在客厅放了张照片'},
   ],
   '厨房':[
     {b:'查看冰箱',fn:async()=>{const f=await get('/fridge?select=item,quantity&quantity=gt.0&order=item.asc');return f.length?'冰箱里有：\n'+f.map(x=>x.item+' × '+x.quantity).join('\n'):'冰箱空了。'},log:'打开冰箱看了看'},
+    {b:'放入食材',input:true,placeholder:'食材名称，如：番茄、草莓',fn:async(val)=>{const ex=await get('/fridge?select=quantity&item=eq.'+encodeURIComponent(val));if(ex.length){await fetch(SB+'/fridge?item=eq.'+encodeURIComponent(val),{method:'PATCH',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({quantity:ex[0].quantity+1,source:'来访者带来的'})});}else{await fetch(SB+'/fridge',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({item:val,quantity:1,source:'来访者带来的'})});}return val+' 放进冰箱了！';},log:'往冰箱放了食材'},
     {b:'泡杯茶',r:['茶壶已经热了，倒出来正好。','茶叶是上次买的，还剩一点。','茶香飘出来，厨房暖乎乎的。'],log:'在厨房泡了杯茶'},
     {b:'看看锅碗',r:['锅碗瓢盆挂了一排，很整齐。','挂锅的那排钩子少了一个。','随手擦了擦茶壶。'],log:'在厨房整理了锅碗'},
-    {b:'看看植物',fn:async()=>{const pl=await get('/garden_plants?select=type,stage&order=planted_at.asc&limit=5');const st=['🌱 种子','🌿 发芽','🌿 小苗','🌾 成熟可收获'];return pl.length?'花园植物：\n'+pl.map(x=>x.type+'　'+st[x.stage||0]).join('\n'):'花园暂时没有种什么。'},log:'在厨房查了查花园植物状态'},
   ],
   '浴室':[
     {b:'戳泡泡',r:['啵——','泡泡没了，又冒出来一个。','啵啵啵！'],log:'在浴室戳了戳泡泡'},
