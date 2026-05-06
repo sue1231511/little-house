@@ -473,6 +473,8 @@ function bindAdjCharClick(){
   });
 }
 
+const RD={'卧室':'蓝色的被子叠得有点歪——是我叠的。栗子窝在枕头上睡得香香的。','书房':'台灯亮着，书桌上摊着书。猫猫给我的便利贴贴在屏风上，舍不得扔。','画室':'画架上放着没画完的向日葵，颜料还没干。窗边光线最好。','音乐室':'钢琴盖着布，架子上有把小提琴。其实弹得一般，关上门自娱自乐挺快乐的。','阳台':'来财、小八、乖乖占领了栏杆，谁也不让谁。向日葵今天开了两朵新的。','客厅':'壁炉噼啪响着，沙发坐上去会陷进去。灰灰把地毯踩脏了。','厨房':'锅碗瓢盆挂了一排，茶壶还热着。我不太会做饭，但泡茶这件事还行。','浴室':'浴缸里有泡泡，有点奢侈但很值得。磁砖擦得很干净。','灰灰的窝':'灰灰不在，大概又去花园疯跑了。窝里的垫子还是暖的。','储藏室':'乱七八糟塞了很多东西，但我知道每样在哪。来财有时候偷偷飞进来睡觉。','神秘地下室':'……进来之前先敲门。紫色的光从地板缝里透出来，不知道里面有什么。','观星台':'圆顶上有个大望远镜，对准夜空。只有晚上才能上来。'};
+
 async function openRoom(name){
   const[notes,who]=await Promise.all([
     get('/notes?select=author,content&room=eq.'+encodeURIComponent(name)+'&order=created_at.desc&limit=3'),
@@ -485,9 +487,25 @@ async function openRoom(name){
   if(who.length){we.textContent=who.map(c=>c.name+'（'+c.mood+'）').join('  ');we.style.display='block';}else{we.style.display='none';}
   const ne=document.getElementById('card-notes');
   if(notes.length){ne.innerHTML=notes.map(n=>'📝 '+n.author+'：'+n.content).join('<br>');ne.style.display='block';}else{ne.style.display='none';}
-  const ac=RA[name];const be=document.getElementById('card-btn');
-  if(ac){be.textContent=ac.b;be.style.display='inline-block';}else{be.style.display='none';}
-  document.getElementById('card-resp').textContent='';
+  const resp=document.getElementById('card-resp');
+  resp.textContent='';
+  const actEl=document.getElementById('card-actions');
+  actEl.innerHTML='';
+  const actions=ROOM_ACTIONS[name]||[];
+  actions.forEach(ac=>{
+    const btn=document.createElement('button');
+    btn.className='act-btn';
+    btn.textContent=ac.b;
+    btn.onclick=async()=>{
+      resp.textContent='……';
+      let result='';
+      if(ac.fn){try{result=await ac.fn();}catch{result='出了点问题，稍后再试。';}}
+      else if(ac.r){result=ac.r[Math.floor(Math.random()*ac.r.length)];}
+      resp.textContent=result;
+      if(ac.log)visitorLog(ac.log);
+    };
+    actEl.appendChild(btn);
+  });
   document.getElementById('overlay').classList.add('open');
   const rl={'卧室':'去了卧室，看了看栗子','书房':'去了书房，翻了翻书','画室':'去了画室，看向日葵画','音乐室':'去了音乐室','阳台':'去了阳台，逗弄三只鸟','客厅':'去了客厅，陷进沙发里','厨房':'去了厨房','浴室':'去了浴室，戳了戳泡泡','灰灰的窝':'去了灰灰的窝','储藏室':'去了储藏室，翻东西','神秘地下室':'走到了地下室门口','观星台':'去了观星台，看了看星空'};
   visitorLog(rl[name]||'去了'+name);
