@@ -632,6 +632,15 @@ function renderChars(chars,visitors=[]){
   });
 }
 setInterval(()=>{fetchAll();fetchMsgs(false);},8000);
+document.getElementById('event-btn').onclick=async()=>{
+  const val=document.getElementById('event-inp').value.trim();
+  if(!val)return;
+  await post('/home_log',{event:val,actor:myName||'访客'});
+  document.getElementById('event-inp').value='';
+  showToast('✦ 记下来了！');
+  fetchAll();
+};
+document.getElementById('event-inp').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('event-btn').click();});
 </script>
 </body>
 </html>
