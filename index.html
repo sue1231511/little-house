@@ -290,7 +290,7 @@ const ROOM_ACTIONS={
   ],
   '阳台':[
     {b:'逗逗鸟',r:['来财：「~~~~~」（高音）','小八：「嗯嗯嗯！」','乖乖：「……」（装没听到）'],log:'在阳台逗了逗三只鸟'},
-    {b:'看向日葵',fn:async()=>{const sf=await get('/sunflower?select=stage&id=eq.1');const s=sf[0]?.stage??0;const t=['种子还在土里','刚刚发芽了','小苗在努力长','花苞要开了','开得正好','结了种子，圆满了'];return '阳台的向日葵：'+t[s];},log:'站在阳台看向日葵'},
+    {b:'给向日葵浇水',fn:async()=>{const sf=await get('/sunflower?select=stage&id=eq.1');const cur=sf[0]?.stage??0;const ST=['种子在土里','刚发芽了','小苗在长','花苞要开了','开得正好','结了种子✨'];if(cur>=5)return '向日葵已经'+ST[5]+'，不需要浇水了~';await fetch(SB+'/sunflower?id=eq.1',{method:'PATCH',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({stage:cur+1,last_watered:new Date().toISOString()})});return '浇完啦！\n'+ST[cur]+' → '+ST[cur+1];},log:'给向日葵浇了水'},
     {b:'靠栏杆发呆',r:['风从山那边来的。','远处有灯光，不知道是谁家。','在这里站着，脑子空空的，挺好的。'],log:'靠在阳台栏杆上发呆'},
   ],
   '客厅':[
