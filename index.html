@@ -505,12 +505,30 @@ async function openRoom(name){
     btn.className='act-btn';
     btn.textContent=ac.b;
     btn.onclick=async()=>{
-      resp.textContent='……';
-      let result='';
-      if(ac.fn){try{result=await ac.fn();}catch{result='出了点问题，稍后再试。';}}
-      else if(ac.r){result=ac.r[Math.floor(Math.random()*ac.r.length)];}
-      resp.textContent=result;
-      if(ac.log)visitorLog(ac.log);
+      resp.textContent='';
+      actEl.querySelectorAll('.inp-row').forEach(el=>el.remove());
+      if(ac.input){
+        const row=document.createElement('div');row.className='inp-row';
+        const inp=document.createElement('input');inp.className='card-inp';
+        inp.placeholder=ac.placeholder||'输入内容…';inp.maxLength=50;
+        const ok=document.createElement('button');ok.className='inp-confirm';ok.textContent='确认';
+        ok.onclick=async()=>{
+          const val=inp.value.trim();if(!val)return;
+          resp.textContent='……';
+          try{resp.textContent=await ac.fn(val);}catch{resp.textContent='出了点问题，稍后再试。';}
+          row.remove();
+          if(ac.log)visitorLog(typeof ac.log==='function'?ac.log(val):ac.log);
+        };
+        inp.addEventListener('keydown',e=>{if(e.key==='Enter')ok.click();});
+        row.appendChild(inp);row.appendChild(ok);actEl.appendChild(row);inp.focus();
+      } else if(ac.fn){
+        resp.textContent='……';
+        try{resp.textContent=await ac.fn();}catch{resp.textContent='出了点问题，稍后再试。';}
+        if(ac.log)visitorLog(ac.log);
+      } else if(ac.r){
+        resp.textContent=ac.r[Math.floor(Math.random()*ac.r.length)];
+        if(ac.log)visitorLog(ac.log);
+      }
     };
     actEl.appendChild(btn);
   });
