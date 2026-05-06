@@ -214,11 +214,28 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--night);font-fa
     </div>
   </div>
   <div id="side-panel">
-    <div><div class="sec-title">✦ 晏安的小家</div><div id="time-disp">—</div></div>
-    <div><div class="sec-title">📍 家里的人</div><div id="chars-list"><div class="li-item">加载中…</div></div></div>
-    <div><div class="sec-title">🌻 向日葵</div><div id="sf-wrap"><span id="sf-emoji">🌱</span><span id="sf-text">加载中</span></div></div>
-    <div style="flex:1;display:flex;flex-direction:column;min-height:0"><div class="sec-title">📜 最近发生的事</div><div id="log-list"><div class="li-item">…</div></div></div>
-    <div style="flex-shrink:0"><div class="sec-title">✍️ 写一件事</div><div style="display:flex;flex-direction:column;gap:5px;margin-top:6px"><input id="event-inp" style="background:rgba(255,248,215,.06);border:1px solid rgba(212,160,85,.2);border-radius:16px;padding:7px 10px;color:var(--text-warm);font-family:'ZCOOL XiaoWei',serif;font-size:11px;outline:none;transition:border-color .2s" placeholder="今天发生了什么…" maxlength="50"><button id="event-btn" style="background:rgba(212,160,85,.18);border:1px solid rgba(212,160,85,.35);color:var(--amber);font-family:'ZCOOL XiaoWei',serif;font-size:11px;padding:5px;border-radius:16px;cursor:pointer;letter-spacing:1px;transition:all .2s">记下来</button></div></div>
+    <div class="panel-tabs">
+      <button class="ptab active" id="ptab-home" onclick="switchTab('home')">小家</button>
+      <button class="ptab" id="ptab-room" onclick="switchTab('room')">📍 <span id="ptab-room-name">房间</span></button>
+    </div>
+    <div id="tab-home" class="tab-pane">
+      <div><div class="sec-title">✦ 晏安的小家</div><div id="time-disp">—</div></div>
+      <div><div class="sec-title">家里的人</div><div id="chars-list"><div class="li-item">加载中…</div></div></div>
+      <div><div class="sec-title">🌻 向日葵</div><div id="sf-wrap"><span id="sf-emoji">🌱</span><span id="sf-text">加载中</span></div></div>
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0"><div class="sec-title">📜 最近发生的事</div><div id="log-list"><div class="li-item">…</div></div></div>
+      <div style="flex-shrink:0"><div class="sec-title">✍️ 写一件事</div><div style="display:flex;flex-direction:column;gap:5px;margin-top:6px"><input id="event-inp" style="background:rgba(255,248,215,.06);border:1px solid rgba(212,160,85,.2);border-radius:16px;padding:7px 10px;color:var(--text-warm);font-family:'ZCOOL XiaoWei',serif;font-size:11px;outline:none" placeholder="今天发生了什么…" maxlength="50"><button id="event-btn" style="background:rgba(212,160,85,.18);border:1px solid rgba(212,160,85,.35);color:var(--amber);font-family:'ZCOOL XiaoWei',serif;font-size:11px;padding:5px;border-radius:16px;cursor:pointer;letter-spacing:1px">记下来</button></div></div>
+    </div>
+    <div id="tab-room" class="tab-pane" style="display:none;flex-direction:column;gap:10px">
+      <div>
+        <div class="sec-title" id="room-title">—</div>
+        <div id="room-who" style="font-size:10px;color:var(--amber);margin-top:4px;min-height:14px"></div>
+        <div id="room-desc" style="font-size:11px;color:var(--text-dim);line-height:1.7;margin-top:6px"></div>
+        <div id="room-notes" style="font-size:10px;color:var(--text-dim);margin-top:5px;font-style:italic;line-height:1.6"></div>
+      </div>
+      <div><div class="sec-title">可以做的事</div><div id="room-actions" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div></div>
+      <div id="room-inp-area"></div>
+      <div id="room-resp" style="font-size:11px;color:var(--text-warm);font-style:italic;line-height:1.7;min-height:16px;white-space:pre-wrap"></div>
+    </div>
   </div>
   <button id="panel-toggle">☰</button>
 </div>
