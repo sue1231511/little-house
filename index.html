@@ -300,6 +300,7 @@ const ROOM_ACTIONS={
     {b:'翻翻书架',r:['找到一本夹着书签的旧书。','有一本书歪在角落里。','书脊有点旧了，内容还是好看的。'],log:'在书房翻了翻书架'},
     {b:'看便利贴',fn:async()=>{const n=await get('/notes?select=author,content&room=eq.书房&order=created_at.desc&limit=5');return n.length?n.map(x=>x.author+'：'+x.content).join('\n'):'书架上现在没有便利贴。'},log:'看了看书房的便利贴'},
     {b:'留张便利贴',input:true,placeholder:'写点什么…',fn:async(val)=>{await fetch(SB+'/notes',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({room:'书房',author:myName||'访客',content:val})});return '便利贴贴在书架上了！';},log:'在书房留了张便利贴'},
+    {b:'给晏安写信',input:true,placeholder:'写点想说的…（最多100字）',fn:async(val)=>{const name=myName||'匿名访客';await fetch(SB+'/letters',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({from_name:name,content:val})});await post('/home_log',{event:'给晏安写了一封信',actor:name});fetchMailbox();return '信放进信箱了，等晏安来读~';},log:'在书房给晏安写了一封信'},
   ],
   '画室':[
     {b:'看向日葵画',r:['黄色还差一点点，一直觉得没画完。','颜料还没干，小心别碰。','画的是猫猫那天傍晚的颜色。'],log:'在画室看了看向日葵画'},
