@@ -666,6 +666,62 @@ function renderChars(chars,visitors=[]){
   });
 }
 setInterval(()=>{fetchAll();fetchMsgs(false);},8000);
+
+// 花园
+let selectedFlower='🌸';
+document.getElementById('flower-picks').addEventListener('click',e=>{
+  if(!e.target.textContent.trim())return;
+  selectedFlower=e.target.textContent.trim();
+  document.getElementById('flower-picks').querySelectorAll('span').forEach(s=>s.style.opacity='.4');
+  e.target.style.opacity='1';
+});
+// 把花emoji拆成可点击的span
+(()=>{
+  const wrap=document.getElementById('flower-picks');
+  const flowers=['🌸','🌷','🌼','🌺','🌻','🌹','🍀','🌿'];
+  wrap.innerHTML=flowers.map((f,i)=>`<span style="cursor:pointer;font-size:16px;opacity:${i===0?1:.45};transition:opacity .2s" data-f="${f}">${f}</span>`).join('');
+  wrap.addEventListener('click',e=>{
+    const t=e.target.closest('[data-f]');if(!t)return;
+    selectedFlower=t.dataset.f;
+    wrap.querySelectorAll('[data-f]').forEach(s=>s.style.opacity='.45');
+    t.style.opacity='1';
+  });
+})();
+
+async function fetchGarden(){
+  const rows=await get('/garden_flowers?select=visitor_name,flower,message,planted_at&order=planted_at.desc&limit=20');
+  const el=document.getElementById('garden-list');
+  if(!rows.length){el.textContent='还没有人种花，来第一个吧~';return;}
+  el.innerHTML=rows.map(r=>{
+    const d=new Date(r.planted_at);
+    const ds=`${d.getMonth()+1}/${d.getDate()}`;
+    return `<div style="border-bottom:1px solid rgba(212,160,85,.07);padding:2px 0">${r.flower} <span style="color:var(--amber)">${r.visitor_name}</span>${r.message?'：'+r.message:''} <span style="opacity:.4;font-size:9px">${ds}</span></div>`;
+  }).join('');
+}
+document.getElementById('flower-btn').onclick=async()=>{
+  const name=myName||'匿名访客';
+  const msg=document.getElementById('flower-msg').value.trim();
+  await fetch(SB+'/garden_flowers',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({visitor_name:name,flower:selectedFlower,message:msg||null})});
+  await post('/home_log',{event:'在花园种下了一株'+selectedFlower,actor:name});
+  document.getElementById('flower-msg').value='';
+  showToast('🌱 种下了！');
+  fetchGarden();fetchAll();
+};
+
+// 信箱
+async function fetchMailbox(){
+  if(!myName){document.getElementById('mailbox-list').textContent='登录后可查看自己的信';return;}
+  const rows=await get('/letters?select=content,reply,replied_at,created_at&from_name=eq.'+encodeURIComponent(myName)+'&order=created_at.desc&limit=5');
+  const el=document.getElementById('mailbox-list');
+  if(!rows.length){el.textContent='还没有寄过信。';return;}
+  el.innerHTML=rows.map(r=>{
+    const d=new Date(r.created_at);const ds=`${d.getMonth()+1}/${d.getDate()}`;
+    if(r.reply)return `<div style="margin-bottom:4px">📨 <span style="color:var(--amber)">有回信</span>（${ds}）：${r.reply}</div>`;
+    return `<div style="margin-bottom:4px;opacity:.6">📩 ${ds} 寄出：${r.content.slice(0,20)}${r.content.length>20?'…':''}</div>`;
+  }).join('');
+}
+
+fetchGarden();fetchMailbox();
 document.getElementById('event-btn').onclick=async()=>{
   const val=document.getElementById('event-inp').value.trim();
   if(!val)return;
