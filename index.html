@@ -632,7 +632,11 @@ function renderChars(chars,visitors=[]){
   const RO={};
   document.getElementById('chars-list').innerHTML=chars.map(c=>{
     const col=CC[c.name]||'#d4a055',mc=MC[c.mood]||'#9a7848';
-    return '<div class="ci"><div class="ci-dot" style="background:'+col+'"></div><div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-loc">'+c.location+'</div></div><span class="ci-mood" style="background:'+mc+'22;color:'+mc+'">'+c.mood+'</span></div>';
+    const isYA=c.name==='晏安';
+    const hb=c.hunger??80,hp=c.happiness??80,bd=c.bond??0;
+    const bar=(v,clr)=>{const pct=Math.max(0,Math.min(100,v));return `<div style="height:3px;background:rgba(255,255,255,.08);border-radius:2px;flex:1"><div style="height:100%;width:${pct}%;background:${clr};border-radius:2px;transition:width .3s"></div></div>`;};
+    const stats=isYA?'':`<div style="display:flex;gap:4px;align-items:center;margin-top:2px"><span style="font-size:8px;color:#9a7848;width:14px">🍖</span>${bar(hb,'#e8a040')}<span style="font-size:8px;color:#9a7848;width:14px">😊</span>${bar(hp,'#78c878')}<span style="font-size:8px;color:#9a7848;width:14px">💕</span>${bar(bd,'#e070a0')}</div>`;
+    return '<div class="ci"><div class="ci-dot" style="background:'+col+'"></div><div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-loc">'+c.location+'</div>'+stats+'</div><span class="ci-mood" style="background:'+mc+'22;color:'+mc+'">'+c.mood+'</span></div>';
   }).join('');
   const ol=document.getElementById('int-overlay');
   ol.querySelectorAll('.char-pin').forEach(el=>el.remove());
