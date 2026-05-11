@@ -725,6 +725,73 @@ async function fetchMailbox(){
   }).join('');
 }
 
+// ── 新增房间交互按钮 ──
+ROOM_ACTIONS['厨房'].push(
+  {b:'🍳 自由做饭',input:true,placeholder:'菜名：食材1,食材2...',fn:async(val)=>{
+    const parts=val.split('：').length>1?val.split('：'):val.split(':');
+    const name=parts[0]?.trim()||'无名料理';
+    const ings=(parts[1]||'').split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+    if(!ings.length)return '格式：菜名：食材1,食材2（先查看冰箱有什么）';
+    for(const i of ings){const ex=await get('/fridge?select=quantity&item=eq.'+encodeURIComponent(i));if(!ex.length||ex[0].quantity<1)return `冰箱里没有${i}！`;}
+    for(const i of ings){const ex=await get('/fridge?select=quantity&item=eq.'+encodeURIComponent(i));await fetch(SB+'/fridge?item=eq.'+encodeURIComponent(i),{method:'PATCH',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({quantity:Math.max(0,ex[0].quantity-1)})});}
+    const roll=Math.random();const q=roll<.1?'灾难':roll<.35?'凑合':roll<.75?'好吃':'绝了';
+    const stars=q==='绝了'?5:q==='好吃'?3:q==='凑合'?2:1;
+    await fetch(SB+'/dishes',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({name,description:'食材：'+ings.join('、')+'｜'+q,stars})});
+    await post('/home_log',{event:`做了【${name}】（${q}）`,actor:myName||'晏安'});
+    const msgs={'灾难':'锅烧焦了……灰灰吓跑了','凑合':'看起来一般，但能吃','好吃':'香味飘出来了，栗子探头了','绝了':'完美！来财在喊好吃好吃！'};
+    return `【${name}】做好了！（${q}）\n${msgs[q]}\n放在餐桌上了~`;
+  },log:'在厨房做了一道菜'},
+  {b:'📋 看餐桌',fn:async()=>{const d=await get('/dishes?select=name,description&order=id.desc&limit=8');return d.length?'餐桌上有：\n'+d.map((x,i)=>(i+1)+'. '+x.name+'（'+x.description+')').join('\n'):'餐桌空了，去做菜吧~';},log:'看了看餐桌'}
+);
+ROOM_ACTIONS['花园']=(ROOM_ACTIONS['花园']||[]).concat([
+  {b:'🌿 坐草地发呆',r:['坐在向日葵旁边，它比你还高了。','灰灰跑过来趴在腿上，重死了。','摘了朵小野花别在耳朵上。','一只蜻蜓停在膝盖上。','闭上眼睛听风，远处好像有琴声。'],log:'在花园草地上坐了一会儿'},
+  {b:'🌻 摘向日葵籽',fn:async()=>{const sf=await get('/sunflower?select=stage&id=eq.1');if((sf[0]?.stage??0)<5)return '向日葵还没结种子呢~';const n=Math.floor(Math.random()*4)+1;const ex=await get('/fridge?select=quantity&item=eq.'+encodeURIComponent('向日葵籽'));if(ex.length){await fetch(SB+'/fridge?item=eq.'+encodeURIComponent('向日葵籽'),{method:'PATCH',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({quantity:ex[0].quantity+n})});}else{await fetch(SB+'/fridge',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({item:'向日葵籽',quantity:n,source:'花园'})});}return `摘了${n}把向日葵籽，放进冰箱了🌻`;},log:'摘了向日葵籽'},
+]);
+ROOM_ACTIONS['客厅'].push(
+  {b:'🎬 看电影',input:true,placeholder:'想看什么电影？',fn:async(val)=>{
+    const r=['看到一半睡着了，灰灰也趴旁边睡了。','栗子跳上来挡屏幕，只好暂停摸了五分钟。','看完窝在沙发里发呆好久。','被某个镜头戳到了，鼻子酸酸的。','笑出声，来财被吓一跳。'];
+    await post('/home_log',{event:'看了《'+val+'》',actor:myName||'晏安'});
+    return '🎬 正在看《'+val+'》\n\n'+r[Math.floor(Math.random()*r.length)];
+  },log:'在客厅看电影'},
+  {b:'💤 沙发小睡',r:['陷进沙发，盖上毯子，两分钟就睡着了。','灰灰跳上来蜷在脚边一起睡了。','迷迷糊糊的，好舒服。'],log:'在沙发上小睡了一会儿'}
+);
+ROOM_ACTIONS['浴室'].push(
+  {b:'🛁 泡澡',r:['热水刚好，泡进去整个人都软了。','泡泡铺满浴缸，快看不见自己了。','水雾蒙住镜子，用手指画了个笑脸。','灰灰在门外哼唧，想进来又不敢。','放首歌在浴缸里哼小调。'],log:'泡了个热水澡'}
+);
+ROOM_ACTIONS['阳台'].push(
+  {b:'🦜 教鹦鹉说话',input:true,placeholder:'教谁说什么？如：来财：你好',fn:async(val)=>{
+    const parts=val.split('：').length>1?val.split('：'):val.split(':');
+    const bird=(parts[0]||'').trim();const phrase=(parts[1]||'').trim();
+    if(!bird||!phrase)return '格式：鸟名：要教的话，如 来财：你好';
+    const rate={'来财':.6,'小八':.4,'乖乖':.2};
+    if(Math.random()<(rate[bird]||.3)){
+      await fetch(SB+'/bird_phrases',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({bird,phrase})});
+      const ok={'来财':`来财大声说："${phrase}！"`,'小八':`小八小声重复："${phrase}……"`,'乖乖':`乖乖假装不在意地说了一声"${phrase}"就飞走了`};
+      return '✅ '+(ok[bird]||`${bird}学会了！`);
+    }
+    const fail={'来财':'来财热情叫了一声，但完全走调了。','小八':'小八看着你沉默很久，转过头去了。','乖乖':'乖乖从头到尾都在装睡。'};
+    return '❌ '+(fail[bird]||'没学会，再试试？')+'\n来财最聪明60%，小八40%，乖乖最倔20%';
+  },log:'教鹦鹉说话'},
+  {b:'📖 鹦鹉词汇',fn:async()=>{const p=await get('/bird_phrases?select=bird,phrase&order=id.desc&limit=15');if(!p.length)return '还没教过它们说话呢~';const g={};p.forEach(x=>{if(!g[x.bird])g[x.bird]=[];g[x.bird].push(x.phrase);});return Object.entries(g).map(([b,ps])=>b+'：'+ps.map(x=>'"'+x+'"').join('、')).join('\n');},log:'查看了鹦鹉词汇表'}
+);
+ROOM_ACTIONS['卧室'].push(
+  {b:'💤 床上小睡',r:['躺下瞬间就睡着了，枕头好软。','栗子挪了挪，把枕头一半让给你了。','做了个好梦，醒来栗子趴在旁边。'],log:'在床上小睡了一会儿'}
+);
+const petRooms={'灰灰的窝':'灰灰','卧室':'栗子'};
+Object.entries(petRooms).forEach(([room,pet])=>{
+  if(!ROOM_ACTIONS[room])ROOM_ACTIONS[room]=[];
+  ROOM_ACTIONS[room].push(
+    {b:`🍖 喂${pet}`,input:true,placeholder:`喂${pet}吃什么？`,fn:async(val)=>{
+      const f=val||'小零食';
+      await post('/home_log',{event:`给${pet}喂了${f}`,actor:myName||'晏安'});
+      const r={'栗子':['栗子慢吞吞吃了起来，吃完舔了舔嘴。','栗子闻了闻，满意地吃掉了。'],'灰灰':['灰灰一口叼走了！尾巴摇飞！','灰灰吃得嘎嘣嘎嘣响。']};
+      return (r[pet]||['吃掉了~'])[Math.floor(Math.random()*(r[pet]||['']).length)];
+    },log:`喂了${pet}`},
+    {b:`🎾 陪${pet}玩`,r:pet==='灰灰'?['灰灰疯了一样跑来跑去！','灰灰叼着球不肯还你。','灰灰玩到满地打滚。']:['栗子炸毛了！扑过来抓住了！','栗子懒洋洋挥了两下爪子。','栗子玩累了趴在你腿上。'],log:`陪${pet}玩了一会儿`},
+    {b:`🤗 抱抱${pet}`,r:pet==='灰灰'?['灰灰把头埋进你怀里。','灰灰翻肚皮了！疯狂摇尾巴！']:['栗子蹭了蹭你的手。','栗子跳到腿上呼噜呼噜。'],log:`抱了抱${pet}`}
+  );
+});
+
 fetchGarden();fetchMailbox();
 document.getElementById('event-btn').onclick=async()=>{
   const val=document.getElementById('event-inp').value.trim();
