@@ -599,7 +599,7 @@ async function fetchAll(){
   const d=document.getElementById('rdot');
   d.classList.add('pulse');setTimeout(()=>d.classList.remove('pulse'),600);
   const[chars,sf,logs,visitors]=await Promise.all([
-    get('/characters?select=name,location,status,mood&order=name.asc'),
+    get('/characters?select=name,location,status,mood,hunger,happiness,bond&order=name.asc'),
     get('/sunflower?select=stage&id=eq.1'),
     get('/home_log?select=event,actor&order=created_at.desc&limit=15'),
     get("/online_visitors?select=nickname,room&last_seen=gt."+new Date(Date.now()-300000).toISOString()),
